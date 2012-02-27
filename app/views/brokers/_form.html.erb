@@ -1,0 +1,34 @@
+<%= form_for(@broker, :html => {:class =>'form'}) do |f| %>
+  <% if @broker.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@broker.errors.count, "error") %> prohibited this broker from being saved:</h2>
+
+      <ul>
+      <% @broker.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+
+    <%= f.label :street1 %>
+    <%= f.text_field :street1 %>
+
+    <%= f.label :street2 %>
+    <%= f.text_field :street2 %>
+
+    <%= f.label :city %>
+    <%= f.text_field :city %>
+
+    <%= f.label :state %>
+    <%= f.text_field :state %>
+
+    <%= f.label :zip %>
+    <%= f.number_field :zip %>
+
+    <%= f.submit %>
+
+<% end %>
