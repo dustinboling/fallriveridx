@@ -6,7 +6,10 @@
 	    <th>First name</th>
 	    <th>Last name</th>
 	    <th>Email</th>
-	    <th></th>
+			<th>Phone</th>
+	    <th>License Number</th>
+			<th>Broker ID</th>
+			<th></th>
 	    <th></th>
 	    <th></th>
 	  </tr>
@@ -16,6 +19,9 @@
 	    <td><%= agent.first_name %></td>
 	    <td><%= agent.last_name %></td>
 	    <td><%= agent.email %></td>
+			<td><%= agent.phone %></td>
+			<td><%= agent.license_number %></td>
+			<td><%= agent.broker_id %></td>
 	    <td><%= link_to 'Show', agent %></td>
 	    <td><%= link_to 'Edit', edit_agent_path(agent) %></td>
 	    <td><%= link_to 'Destroy', agent, confirm: 'Are you sure?', method: :delete %></td>

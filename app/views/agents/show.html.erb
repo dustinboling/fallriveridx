@@ -15,6 +15,20 @@
   <%= @agent.email %>
 </p>
 
+<p>
+  <b>Phone:</b>
+  <%= @agent.phone %>
+</p>
+
+<p>
+  <b>License Number</b>
+  <%= @agent.license_number %>
+</p>
+
+<p>
+  <b>Broker ID:</b>
+  <%= @agent.broker_id %>
+</p>
 
 <%= link_to 'Edit', edit_agent_path(@agent) %> |
 <%= link_to 'Back', agents_path %>

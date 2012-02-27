@@ -9,7 +9,9 @@
 	    <th>City</th>
 	    <th>State</th>
 	    <th>Zip</th>
-	    <th></th>
+	    <th>Phone</th>
+			<th>License Number</th>
+			<th></th>
 	    <th></th>
 	    <th></th>
 	  </tr>
@@ -22,6 +24,8 @@
 	    <td><%= broker.city %></td>
 	    <td><%= broker.state %></td>
 	    <td><%= broker.zip %></td>
+			<td><%= broker.phone %></td>
+			<td><%= broker.license_number %></td>
 	    <td><%= link_to 'Show', broker %></td>
 	    <td><%= link_to 'Edit', edit_broker_path(broker) %></td>
 	    <td><%= link_to 'Destroy', broker, confirm: 'Are you sure?', method: :delete %></td>
