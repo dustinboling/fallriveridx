@@ -52,4 +52,4 @@ production:
   database: fallriveridx_production
   pool: 5
   username: fallriveridx
-  password:
+  password: '123456'
