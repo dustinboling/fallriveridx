@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120227222531) do
+ActiveRecord::Schema.define(:version => 20120312230510) do
 
   create_table "agents", :force => true do |t|
     t.string   "first_name"
@@ -53,5 +53,22 @@ ActiveRecord::Schema.define(:version => 20120227222531) do
   end
 
   add_index "listings", ["agent_id"], :name => "index_listings_on_agent_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "username",                        :null => false
+    t.string   "email"
+    t.string   "crypted_password"
+    t.string   "salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "remember_me_token"
+    t.datetime "remember_me_token_expires_at"
+    t.string   "reset_password_token"
+    t.datetime "reset_password_token_expires_at"
+    t.datetime "reset_password_email_sent_at"
+  end
+
+  add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token"
 
 end
