@@ -5,3 +5,7 @@
  *= require_self
  *= require twitter/bootstrap
 */
+
+body {
+	padding-top: 40px;
+}
