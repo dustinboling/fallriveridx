@@ -1,2 +1,2 @@
 # this did not work at all on the first day, need to make sure we have some exceptions for when this breaks down.
-# $client = RETS::Client.login(:url => "http://carets.retscure.com:6103/platinum/login", :username => "CARDUSTINBOLINGASSOC+", :password => "sterac4501")
+# $client = RETS::Client.login(:url => "http://carets.retscure.com:6103/platinum/login", :username => "CARDUSTINBOLINGASSOC+", :password => "sterac4501", :useragent => {:name => "CARETS-General/1.0"})
