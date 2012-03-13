@@ -1,7 +1,9 @@
 <div class="container">
 	<h1>Welcome to Fall River IDX</h1>
 	<h3>Have a look at the various resources:</h3>
-	<%= link_to "Brokers", :controller => 'brokers', :action => 'index' %><br />
-	<%= link_to "Agents", :controller => 'agents', :action => 'index' %><br />
-	<%= link_to "Listings", :controller => 'listings', :action => 'index' %><br />
+	<blockquote>
+		<h4><%= link_to "Listings", :controller => 'listings', :action => 'index' %></h4>
+		<h4><%= link_to "Brokers", :controller => 'brokers', :action => 'index' %></h4>
+		<h4><%= link_to "Agents", :controller => 'agents', :action => 'index' %></h4>
+	</blockquote>
 </div>
