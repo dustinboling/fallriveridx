@@ -1,34 +1,28 @@
-<%= form_for(@broker, :html => {:class =>'form'}) do |f| %>
-  <% if @broker.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@broker.errors.count, "error") %> prohibited this broker from being saved:</h2>
+<%= form_for(@broker, :html => {:class =>'form-stacked'}) do |f| %>
 
-      <ul>
-      <% @broker.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= error_messages_for(@broker) %>
 
-    <%= f.label :name %>
-    <%= f.text_field :name %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
 
-    <%= f.label :street1 %>
-    <%= f.text_field :street1 %>
+  <%= f.label :street1 %>
+  <%= f.text_field :street1 %>
 
-    <%= f.label :street2 %>
-    <%= f.text_field :street2 %>
+  <%= f.label :street2 %>
+  <%= f.text_field :street2 %>
 
-    <%= f.label :city %>
-    <%= f.text_field :city %>
+  <%= f.label :city %>
+  <%= f.text_field :city %>
 
-    <%= f.label :state %>
-    <%= f.text_field :state %>
+  <%= f.label :state %>
+  <%= f.text_field :state %>
 
-    <%= f.label :zip %>
-    <%= f.number_field :zip %>
+  <%= f.label :zip %>
+  <%= f.number_field :zip %>
 
-    <%= f.submit %>
+  <%= f.label :license_number %>
+  <%= f.text_field :license_number %><br />
+
+  <%= f.submit :class => "btn btn-success" %>
 
 <% end %>
