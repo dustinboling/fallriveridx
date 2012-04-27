@@ -1,4 +1,7 @@
 class ListingsController < ApplicationController
+  def test  
+  end
+
   # GET /listings
   # GET /listings.json
   def index

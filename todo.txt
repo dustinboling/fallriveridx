@@ -1,0 +1,29 @@
+fallriver IDX - TODO
+
+**NOTE**
+* The client does not stay alive for very long, the nonce becomes invalid.
+* Thus, spin up a new client as needed. Do not rely on an initializer.
+* Or, we can rescue from the nonce error: '20036: V2.7.0 1186: Nonce is invalid'
+
+**QUERIES**
+* Use the following syntax to find things in the database.
+* We have to do this because of the uppercase letters in postgres columns.
+* Note that arel-style queries work normally, and are more performant.
+*== Listing.where('"ListingDate" like ?', "1987%")
+
+#6 - devise authentication with token authenticable module support for json queries
+#7 - json api @ fallriveridx.com/api/listings/ ... api/agents/
+#8 - finish loading all properties to database, push to heroku
+#9 - make sure there are no admin people in the Agent table
+
+COMPLETED
+#1 - write Property seed task
+#2 - write ActiveAgent seed task
+
+TO TEST
+#4 - write Property update task
+#5 - write Agent update task
+
+CANCELLED
+#2.1 - separate ActiveAgent fields into broker/agent
+  - rets database was too inconsistent
