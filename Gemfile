@@ -9,7 +9,10 @@ gem 'rails', '3.1.3'
 gem 'pg'
 gem 'sorcery'
 gem 'therubyracer'
+
+# for internal json api
 gem 'rabl'
+gem 'json'
 
 # for outside api's
 gem 'ruby-rets', :git => 'https://github.com/Placester/ruby-rets.git'

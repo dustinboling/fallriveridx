@@ -4,6 +4,7 @@ fallriver IDX - TODO
 * The client does not stay alive for very long, the nonce becomes invalid.
 * Thus, spin up a new client as needed. Do not rely on an initializer.
 * Or, we can rescue from the nonce error: '20036: V2.7.0 1186: Nonce is invalid'
+* Another option: keep the client alive with an hourly(?) task
 
 **QUERIES**
 * Use the following syntax to find things in the database.
@@ -15,6 +16,14 @@ fallriver IDX - TODO
 #7 - json api @ fallriveridx.com/api/listings/ ... api/agents/
 #8 - finish loading all properties to database, push to heroku
 #9 - make sure there are no admin people in the Agent table
+#10 - better error messages in api/properties/invalid_parameters
+#11 - log api requests
+#12 - log logins fail/success
+#13 - log ip addresses from which api requests are made
+#14 - indexes for database (save for last, learn from postgres documentation: it's good.)
+#15 - get all the necessary Property fields into the RABL template
+#16 - see if its faster to not extend the show action (RABL)
+#17 - 
 
 COMPLETED
 #1 - write Property seed task
