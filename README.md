@@ -2,6 +2,8 @@
 Hello, this is the IDX for Dustin Boling Associates real estate sites. Just your basic RESTful JSON api. Post to our url, get back the data you requested. Data is updated every four hours with new properties, so your feeds will always be up to date.
 
 # PROPERTY SEARCH API
+
+## Search
 The property search api takes requests here:
 
 ```ruby
@@ -24,7 +26,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * BathsTotal (returns greater than or equal to the number given)
 * LotSizeSQFT (returns greater than or equal to the number given)
 
-# SINGLE PROPERTY DETAILS
+## Show (Single Property Details)
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.
 
 ```ruby
