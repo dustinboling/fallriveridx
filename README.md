@@ -1,5 +1,5 @@
 # FALL RIVER IDX
-Hello, this is the IDX backend for Dustin Boling Associates real estate sites. Just your basic RESTful JSON api. Post to our url, get back the data you requested. Data is updated every four hours with new properties.
+Hello, this is the IDX backend for Dustin Boling Associates real estate sites. Just your basic RESTful JSON api. Post to our url, get back the data you requested. Data is updated every four hours with new properties, so your feeds will always be up to date.
 
 # PROPERTY SEARCH API
 The property search api takes requests here:
