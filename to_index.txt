@@ -1,0 +1,16 @@
+Listings:
+  Single-
+    :City
+    :ZipCode
+    :ListAgentAgentID
+    :SaleAgentAgentId
+    :ListPrice
+    :BedroomsTotal
+    :BathsTotal
+    :LotSizeSQFT
+    :Limit
+    :ListingID
+  Multi-
+
+Users:
+  :authentication_token

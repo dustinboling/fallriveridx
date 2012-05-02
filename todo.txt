@@ -28,6 +28,8 @@ fallriver IDX - TODO
 #17 - figure out how to add limit in to the api (maybe check for its presence and add it as a first term)
 #19 - test api controller. rigorously.
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
+#21 - drop agents table
+
 
 COMPLETED
 #1 - write Property seed task
