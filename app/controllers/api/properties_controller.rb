@@ -8,11 +8,11 @@ class Api::PropertiesController < ApplicationController
 
   def search
     # construct SQL query
-    if user_params.keys.count == 0
+    if @user_params.keys.count == 0
       respond_error("No parameters supplied.")
     else
       query = "SELECT * FROM listings WHERE "
-      user_params.each do |key, value|
+      @user_params.each do |key, value|
         if /ListPrice/.match(key)
           price_exp = "/\A" + params[:ListPrice] + "/"
           if price_exp.match('>')
@@ -25,20 +25,21 @@ class Api::PropertiesController < ApplicationController
         elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key)
           query = query + "\"#{key}\" >= '#{value}' AND "
         elsif /Limit/.match(key)
-          @query_limit = "LIMIT #{value}"
+          @query_limit = " LIMIT #{value}"
         else
           query = query + "\"#{key}\" = '#{value}' AND "
         end
       end
 
       # check to see query has been modified, make it into an acceptable SQL query, add limit
+      # note that default limit is currently set to 15
       query_exp = "/\A" + query + "/" 
       if query_exp.match("AND ") && @query_limit
         query = query[0..-6]
         query = query + @query_limit + ";"
       elsif query_exp.match("AND ")
         query = query[0..-6]
-        query = query + "LIMIT 10" + ";"
+        query = query + " LIMIT 15" + ";"
       else
         respond_error("No parameters passed to query.")
       end
@@ -63,13 +64,13 @@ class Api::PropertiesController < ApplicationController
   ###
   # filters
   def validate_params
-    user_params = {}
+    @user_params = {}
     params.each do |key, value|
       if ACCEPTABLE_PARAMS.include?(key)
         if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
           # do nothing
         else
-          user_params["#{key}"] = value
+          @user_params["#{key}"] = value
         end
       else
         respond_error("The following parameter is invalid: #{key}")

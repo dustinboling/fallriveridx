@@ -104,7 +104,7 @@ namespace :seed do
     f.close
 
     # all done
-    puts "Successfully added #{@count} records to the database from #{@current_year}."
+    puts "Successfully added #{counter} records to the database from #{@current_year}."
   end
 
   desc "Initial agents seed"
@@ -282,7 +282,7 @@ namespace :seed do
   def log_success(file, year)
     if year == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}\n")
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{counter}\n")
       f.close
     else
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
