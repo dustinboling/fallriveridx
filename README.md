@@ -5,13 +5,13 @@ Hello, this is the IDX for Dustin Boling Associates real estate sites. Just your
 The property search api takes requests here:
 
 ```ruby
-http://fallriveridx.heroku.com/api/search.json?[yourQuery][yourToken]
+http://fallriveridx.heroku.com/api/search.json?[yourQuery]&[yourToken]
 ```
 
 Here is what a full request looks like:
 
 ```ruby
-http://fallriveridx.heroku.com/api/search.json?ListAgentAgentID=A00000111&City=Newport%20Beach&Price=<750000&token=yourToken
+http://fallriveridx.heroku.com/api/search.json?ListAgentAgentID=A00000111&City=Newport%20Beach&Price=<750000&Token=yourToken
 ```
 
 These are the acceptable parameters that are currently searchable from our property api:
@@ -28,5 +28,5 @@ These are the acceptable parameters that are currently searchable from our prope
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.
 
 ```ruby
-http://fallriveridx.heroku.com/api/show.json?ListingID=P12345678
+http://fallriveridx.heroku.com/api/show.json?ListingID=P12345678&Token=yourToken
 ```
