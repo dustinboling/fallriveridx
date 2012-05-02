@@ -46,9 +46,9 @@ namespace :seed do
     # write to database, split into two batches if necessary
     counter = 1
     if @count >= 500000
-      print "Committing first half of properties for #{@current_year}: "
+      print "Committing first half of properties for #{@current_year}:\n"
       records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-06-31)", :offset => 1, :limit => 500000) do |data|
-        print "\n\\\r#{count} / #{@count}"
+        print "\\\r#{count}/#{@count}"
         @listing = Listing.new
 
         fields.each do |field|
@@ -59,9 +59,9 @@ namespace :seed do
         counter = counter + 1
       end
 
-      print "\n\nCommitting second half of properties for #{@current_year}: "
+      print "\n\nCommitting second half of properties for #{@current_year}:\n"
       records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-07-01-#{@current_year}-12-31)", :offset => 500000, :limit => 500000) do |data|
-        print "\n\\\r#{count} / #{@count}"
+        print "\\\r#{count}/#{@count}"
         @listing = Listing.new
 
         fields.each do |field|
@@ -73,9 +73,9 @@ namespace :seed do
       end
 
     else
-      print "Committing properties for #{@current_year}: "
+      print "Committing properties for #{@current_year}:\n "
       records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
-        print "\n\\\r#{counter} / #{@count}"
+        print "\\\r#{counter}/#{@count}"
         @listing = Listing.new
 
         fields.each do |field|

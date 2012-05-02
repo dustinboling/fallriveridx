@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120502174609) do
+ActiveRecord::Schema.define(:version => 20120502193649) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -181,7 +181,7 @@ ActiveRecord::Schema.define(:version => 20120502174609) do
     t.text    "LastModifiedBy"
     t.text    "ListPriceString"
     t.text    "ListingAgreement"
-    t.date    "ListingDate"
+    t.text    "ListingDate"
     t.date    "ListingEntryDate"
     t.text    "ListingID"
     t.text    "ListingKey"
