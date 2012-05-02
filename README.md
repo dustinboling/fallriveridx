@@ -1,4 +1,5 @@
-IDX backend for southcoastblogs real estate sites.
+# FALL RIVER IDX
+Hello, this is the IDX backend for Dustin Boling Associates real estate sites.
 
 - URI returns query string
 - Updates from CARETS every four hours
