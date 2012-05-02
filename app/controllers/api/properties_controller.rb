@@ -1,22 +1,14 @@
 class Api::PropertiesController < ApplicationController
   include Api::PropertiesHelper
 
-  ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format"]
+  ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format"]
 
   def search
-    user_params = {}
     # throw acceptable params into the user_params hash, respond with bad request if necessary
-    params.each do |key, value|
-      if ACCEPTABLE_PARAMS.include?(key)
-        if /action/.match(key) || /controller/.match(key) || /format/.match(key)
-          # do nothing
-        else
-          user_params["#{key}"] = value
-        end
-      else
-        respond_error("The following parameter is invalid: #{key}")
-      end
-    end
+    validate_parameters
+
+    # verify user by token, site_url
+    authenticate_referrer
 
     # construct SQL query
     if user_params.keys.count == 0

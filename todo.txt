@@ -26,12 +26,12 @@ fallriver IDX - TODO
 #15 - get all the necessary Property fields into the RABL template
 #16 - see if its faster to not extend the show action (RABL)
 #17 - figure out how to add limit in to the api (maybe check for its presence and add it as a first term)
-#18 - add broker/office to property search
 #19 - test api controller. rigorously.
 
 COMPLETED
 #1 - write Property seed task
 #2 - write ActiveAgent seed task
+#18 - add broker/office to property search
 
 TO TEST
 #4 - write Property update task

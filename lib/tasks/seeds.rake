@@ -5,7 +5,7 @@ namespace :seed do
   desc "Initial load of properties into the database"
   task :properties  => :environment do
     print "setting up client..."
-    $client = RETS::Client.login(
+    @client = RETS::Client.login(
       :url => "http://carets.retscure.com:6103/platinum/login",
       :username => "CARDUSTINBOLINGASSOC",
       :password => "sterac1071",
@@ -44,10 +44,11 @@ namespace :seed do
     puts "total number of records: #{@count}"
 
     # write to database, split into two batches if necessary
+    counter = 1
     if @count >= 500000
       print "Committing first half of properties for #{@current_year}: "
-      records = $client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-06-31)", :offset => 1, :limit => 500000) do |data|
-        print "."
+      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-06-31)", :offset => 1, :limit => 500000) do |data|
+        print "\n\\\r#{count} / #{@count}"
         @listing = Listing.new
 
         fields.each do |field|
@@ -55,11 +56,12 @@ namespace :seed do
           @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
         end
         @listing.save
+        counter = counter + 1
       end
 
       print "\n\nCommitting second half of properties for #{@current_year}: "
-      records = $client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-07-01-#{@current_year}-12-31)", :offset => 500000, :limit => 500000) do |data|
-        print "."
+      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-07-01-#{@current_year}-12-31)", :offset => 500000, :limit => 500000) do |data|
+        print "\n\\\r#{count} / #{@count}"
         @listing = Listing.new
 
         fields.each do |field|
@@ -67,12 +69,13 @@ namespace :seed do
           @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
         end
         @listing.save
+        counter = counter + 1
       end
 
     else
       print "Committing properties for #{@current_year}: "
-      records = $client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
-        print "."
+      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
+        print "\n\\\r#{counter} / #{@count}"
         @listing = Listing.new
 
         fields.each do |field|
@@ -80,6 +83,7 @@ namespace :seed do
           @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
         end
         @listing.save
+        counter = counter + 1
       end
     end
     puts "\nAll done."
@@ -106,7 +110,7 @@ namespace :seed do
   desc "Initial agents seed"
   task :agents => :environment do
     print "setting up client..."
-    $client = RETS::Client.login(
+    @client = RETS::Client.login(
       :url => "http://carets.retscure.com:6103/platinum/login",
       :username => "CARDUSTINBOLINGASSOC",
       :password => "sterac1071",
@@ -120,14 +124,14 @@ namespace :seed do
     fields = csv.shift.map { |i| i.to_s }
 
     # get a count of active agents
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :count_mode => :both, :limit => 1) do |data|
-      @count = $client.rets_data[:count].to_i
+    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :count_mode => :both, :limit => 1) do |data|
+      @count = @client.rets_data[:count].to_i
     end
     puts "There are currently #{@count} active agents in CARETS."
 
     # write agents to the database
     print "Committing agents to the database: "
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :limit => 500000) do |data|
+    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :limit => 500000) do |data|
       print "."
 
       @agent = Agent.new
@@ -156,7 +160,7 @@ namespace :seed do
   desc "Initial brokers seed"
   task :brokers => :environment do
     print "setting up client..."
-    $client = RETS::Client.login(
+    @client = RETS::Client.login(
       :url => "http://carets.retscure.com:6103/platinum/login",
       :username => "CARDUSTINBOLINGASSOC",
       :password => "sterac1071",
@@ -170,14 +174,14 @@ namespace :seed do
     fields = csv.shift.map { |i| i.to_s }
 
     # get a count of active brokers
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :count_mode => :both, :limit => 1) do |data|
-      @count = $client.rets_data[:count].to_i
+    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :count_mode => :both, :limit => 1) do |data|
+      @count = @client.rets_data[:count].to_i
     end
     puts "There are currently #{@count} active brokers in CARETS."
 
     # write brokers to the database
     print "Committing brokers to the database: "
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :limit => 500000) do |data|
+    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :limit => 500000) do |data|
       print "#{data['AgentID']}/"
 
       @broker = Broker.new
@@ -199,7 +203,7 @@ namespace :seed do
   desc "Initial property media seed"
   task :media => :environment do
     print "setting up client..."
-    $client = RETS::Client.login(
+    @client = RETS::Client.login(
       :url => "http://carets.retscure.com:6103/platinum/login",
       :username => "CARDUSTINBOLINGASSOC",
       :password => "sterac1071",
@@ -247,7 +251,7 @@ namespace :seed do
       offset = value[0]
 
       # query 
-      $client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 500000) do |data|
+      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 500000) do |data|
         @listing_media = ListingMedia.new
 
         fields.each do |field|
@@ -262,8 +266,8 @@ namespace :seed do
   ###
   # procedures
   def get_count
-    $client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 1) do |data|
-      @count = $client.rets_data[:count].to_i
+    @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 1) do |data|
+      @count = @client.rets_data[:count].to_i
     end
   end
 
