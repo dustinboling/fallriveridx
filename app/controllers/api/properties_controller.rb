@@ -1,5 +1,5 @@
 class Api::PropertiesController < ApplicationController
-  include Api::PropertiesHelper
+  include Api::Shared::ErrorsHelper
 
   before_filter :validate_params
   # before_filter :authenticate_referrer

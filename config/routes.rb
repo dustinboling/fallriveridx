@@ -1,38 +1,38 @@
 Fallriveridx::Application.routes.draw do
-  
-  get "home/index"
-  
+
   # api
   namespace :api do
-    get "search" => "properties#search", :as => "search"
-    get "show" => "properties#show", :as => "show"
+    get "properties/search"
+    get "properties/show"
     get "properties/invalid_parameters"
+    get "accounts/create"
+    get "accounts/update"
   end
 
-  get "password_resets/create"
-  get "password_resets/edit"
-  get "password_resets/update"
+  get "home/index"
 
-  get "listings/test"
-  
   # account stuff
   get "logout" => "sessions#destroy", :as => "logout"
   get "login" => "sessions#new", :as => "login"
   get "signup" => "users#new", :as => "signup"
-  
-  
+
+  # user account functions
+  get "password_resets/create"
+  get "password_resets/edit"
+  get "password_resets/update"
+
   # account resources
   resources :users
   resources :sessions
   resources :password_resets
-  
+
   # object resources
   resources :listings
   resources :agents
   resources :brokers
 
   root :to => "home#index"
-  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
