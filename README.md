@@ -33,7 +33,7 @@ This is what a single property search looks like. It only takes one parameter, L
 http://fallriveridx.heroku.com/api/properties/show.json?ListingID=P12345678&Token=yourToken
 ```
 
-ACCOUNTS API
+## ACCOUNTS API
 The property search api takes requests here:
 
 ```ruby
