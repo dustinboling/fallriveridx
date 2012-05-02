@@ -26,7 +26,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * BathsTotal (returns greater than or equal to the number given)
 * LotSizeSQFT (returns greater than or equal to the number given)
 
-# SINGLE PROPERTY SEARCH
+# SINGLE PROPERTY DETAILS
 This is what a single property search looks like. It only takes one parameter, ListingID.
 
 ```
