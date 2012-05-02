@@ -5,7 +5,18 @@ class Api::PropertiesController < ApplicationController
 
   def search
     # throw acceptable params into the user_params hash, respond with bad request if necessary
-    validate_parameters
+    user_params = {}
+    params.each do |key, value|
+      if ACCEPTABLE_PARAMS.include?(key)
+        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
+          # do nothing
+        else
+          user_params["#{key}"] = value
+        end
+      else
+        respond_error("The following parameter is invalid: #{key}")
+      end
+    end
 
     # verify user by token, site_url
     # authenticate_referrer

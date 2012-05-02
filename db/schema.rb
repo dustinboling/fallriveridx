@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120426204847) do
+ActiveRecord::Schema.define(:version => 20120502174609) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -179,7 +179,7 @@ ActiveRecord::Schema.define(:version => 20120426204847) do
     t.text    "LandLeaseAmountPerYear"
     t.date    "LandLeaseExpirationDate"
     t.text    "LastModifiedBy"
-    t.text    "ListPrice"
+    t.text    "ListPriceString"
     t.text    "ListingAgreement"
     t.date    "ListingDate"
     t.date    "ListingEntryDate"
@@ -534,6 +534,7 @@ ActiveRecord::Schema.define(:version => 20120426204847) do
     t.text    "ThomasMapYNumber"
     t.text    "MatchCode"
     t.boolean "GeocodeOverrideYN"
+    t.decimal "ListPrice",                          :precision => 14, :scale => 2
   end
 
   create_table "subscribers", :force => true do |t|
@@ -556,6 +557,8 @@ ActiveRecord::Schema.define(:version => 20120426204847) do
     t.string   "reset_password_token"
     t.datetime "reset_password_token_expires_at"
     t.datetime "reset_password_email_sent_at"
+    t.string   "authentication_token"
+    t.text     "site_url"
   end
 
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"

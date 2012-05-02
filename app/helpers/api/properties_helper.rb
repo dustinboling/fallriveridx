@@ -8,21 +8,6 @@ module Api::PropertiesHelper
     end
   end
 
-  def validate_parameters
-    user_params = {}
-    params.each do |key, value|
-      if ACCEPTABLE_PARAMS.include?(key)
-        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
-          # do nothing
-        else
-          user_params["#{key}"] = value
-        end
-      else
-        respond_error("The following parameter is invalid: #{key}")
-      end
-    end
-  end
-
   # trying to do this without URI module for now to limit overhead.
   def authenticate_referrer
     user = User.find_by_authentication_token(params[:Token])
