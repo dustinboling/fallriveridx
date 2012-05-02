@@ -1,11 +1,11 @@
 require 'csv'
 
-csv = "#{Dir.pwd}/rets-metadata-agent-agent.csv"
+csv = "#{Dir.pwd}/rets-metadata-media-prop_media.csv"
 
-file = "#{Dir.pwd}/agent_fields_with_type.csv"
+file = "#{Dir.pwd}/prop_media_fields.txt"
 
 CSV.foreach(csv) do |row|
   f = File.open(file, 'a')
-  f.write("\'#{row[0]}\',#{row[6]}\n")
+  f.write("\'#{row[0]}\',")
   f.close
 end

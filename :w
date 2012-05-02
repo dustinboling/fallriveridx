@@ -1,10 +1,11 @@
 class Api::PropertiesController < ApplicationController
   include Api::PropertiesHelper
 
-  ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format"]
+  ACCEPTABLE_PARAMS = ["City", "ListAgentAgentID", "ListPrice", "controller", "action", "format"]
 
   def search
     user_params = {}
+
     # throw acceptable params into the user_params hash, respond with bad request if necessary
     params.each do |key, value|
       if ACCEPTABLE_PARAMS.include?(key)
@@ -18,7 +19,8 @@ class Api::PropertiesController < ApplicationController
       end
     end
 
-    # construct SQL query
+    # construct query.
+    # TODO: try to cut this down to one elsif
     if user_params.keys.count == 0
       respond_error("No parameters supplied.")
     else
@@ -27,30 +29,31 @@ class Api::PropertiesController < ApplicationController
         if /ListPrice/.match(key)
           price_exp = "/\A" + params[:ListPrice] + "/"
           if price_exp.match('>')
-            query = query + "\"ListPrice\" > '#{value[1..-1]}' AND "
+            query = query + "\"ListPrice\" > #{value} AND "
           elsif price_exp.match('<')
-            query = query + "\"ListPrice\" < '#{value[1..-1]}' AND "
+            query = query + "\"ListPrice\" < #{value} AND "
           else
             respond_error("Could not parse ListPrice.")
           end 
-        elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key)
-          query = query + "\"#{key}\" >= '#{value}' AND "
+        elsif /BathsTotal/.match(key)
+          query = query + "\"BathsTotal\" > #{value} AND "
+        elsif /BedroomsTotal/.match(key)
+          query = query + "\"BedroomsTotal\" > #{value} AND "
+        elsif /LotSizeSQFT/.match(key)
+          query = query + "\"LotSizeSQFT\" > #{value} AND "
         else
-          query = query + "\"#{key}\" = '#{value}' AND "
+          query = query + "\"#{key}\" = #{value} AND "
         end
       end
 
-      # check to see query has been modified, make it into an acceptable SQL query
-      # this part may be unnecessary (the statement portion)
+      # check to see it ends in _AND_, make it into an acceptable SQL query
       query_exp = "/\A" + query + "/" 
       if query_exp.match("AND ")
         query = query[0..-6]
         query = query + ";"
-      else
-        respond_error("No parameters passed to query.")
       end
 
-      if query == "SELECT * FROM listings WHERE "
+      if query = "SELECT * FROM listings WHERE "
         respond_error("No parameters supplied")
       else
         @listings = Listing.find_by_sql(query)

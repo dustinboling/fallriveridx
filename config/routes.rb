@@ -4,8 +4,8 @@ Fallriveridx::Application.routes.draw do
   
   # api
   namespace :api do
-    get "properties/index"
-    get "properties/show"
+    get "search" => "properties#search", :as => "search"
+    get "show" => "properties#show", :as => "show"
     get "properties/invalid_parameters"
   end
 

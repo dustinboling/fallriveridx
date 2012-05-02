@@ -196,6 +196,69 @@ namespace :seed do
     puts "Successfully added #{@count} brokers to the database."
   end
 
+  desc "Initial property media seed"
+  task :media => :environment do
+    print "setting up client..."
+    $client = RETS::Client.login(
+      :url => "http://carets.retscure.com:6103/platinum/login",
+      :username => "CARDUSTINBOLINGASSOC",
+      :password => "sterac1071",
+      :useragent => { :name => "CARETS-General/1.0" }
+    )
+    puts "ok!"
+
+    puts "populating fields array..."
+    csv = CSV.read("#{Dir.pwd}/prop_media_fields.txt")
+    fields = csv.shift.map { |i| i.to_s }
+
+    # count prop_media since 2004
+
+    # split into groups of 500,000 or less
+    if @count > 500000
+      puts "splitting up count"
+      splits = (@count / 500000.0).ceil
+      puts "splitting up into #{splits} groups"
+
+      # set counters, container
+      n = 1
+      low = 1
+      high = 500000
+      split_ranges = {}
+
+      # set ranges
+      splits.times do |i|
+        # fix 0 offset of the times function
+        i = i + 1
+
+        # set values to hash
+        split_ranges["range#{n}"] = [low, high]
+
+        # increment counters
+        low = low + 500000
+        high = high + 500000
+        n = n + 1
+      end
+    else
+      puts "no need to split up count, moving on..."
+    end
+
+    # add them to the database
+    split_ranges.each do |key, value|
+      offset = value[0]
+
+      # query 
+      $client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 500000) do |data|
+        @listing_media = ListingMedia.new
+
+        fields.each do |field|
+          stripped_field = field.gsub(/'/, "")
+          @listingmedia["#{stripped_field}"] = data["#{stripped_field}"]
+        end
+        @listing_media.save
+      end
+    end
+  end
+
   ###
   # procedures
   def get_count

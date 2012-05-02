@@ -11,6 +11,8 @@ fallriver IDX - TODO
 * We have to do this because of the uppercase letters in postgres columns.
 * Note that arel-style queries work normally, and are more performant.
 *== Listing.where('"ListingDate" like ?', "1987%")
+* OBSERVATIONS
+* query time went down by adding a limit, 20 seems to be the max with o indices (20 =~ 600ms in AR)
 
 #6 - devise authentication with token authenticable module support for json queries
 #7 - json api @ fallriveridx.com/api/listings/ ... api/agents/
@@ -23,7 +25,7 @@ fallriver IDX - TODO
 #14 - indexes for database (save for last, learn from postgres documentation: it's good.)
 #15 - get all the necessary Property fields into the RABL template
 #16 - see if its faster to not extend the show action (RABL)
-#17 - 
+#17 - figure out how to add limit in to the api (maybe check for its presence and add it as a first term)
 
 COMPLETED
 #1 - write Property seed task
