@@ -1,14 +1,14 @@
 class Api::PropertiesController < ApplicationController
   include Api::PropertiesHelper
 
-  ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format"]
+  ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format", "Token"]
 
   def search
     # throw acceptable params into the user_params hash, respond with bad request if necessary
     validate_parameters
 
     # verify user by token, site_url
-    authenticate_referrer
+    # authenticate_referrer
 
     # construct SQL query
     if user_params.keys.count == 0

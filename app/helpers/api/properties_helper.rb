@@ -12,7 +12,7 @@ module Api::PropertiesHelper
     user_params = {}
     params.each do |key, value|
       if ACCEPTABLE_PARAMS.include?(key)
-        if /action/.match(key) || /controller/.match(key) || /format/.match(key)
+        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
           # do nothing
         else
           user_params["#{key}"] = value

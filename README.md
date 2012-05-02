@@ -19,7 +19,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * ZipCode
 * ListAgentAgentID (This is the agent)
 * SaleAgentAgentID (this is the broker)
-* ListPrice (ex: ListPrice=>450000)
+* ListPrice (Must provide greater than or equal to. ex: ListPrice=>450000 will return houses listed at $450,000 or more)
 * BedroomsTotal (returns greater than or equal to the number given)
 * BathsTotal (returns greater than or equal to the number given)
 * LotSizeSQFT (returns greater than or equal to the number given)
