@@ -1,26 +1,12 @@
 class Api::PropertiesController < ApplicationController
   include Api::PropertiesHelper
 
+  before_filter :validate_params
+  before_filter :authenticate_referrer
+
   ACCEPTABLE_PARAMS = ["City", "ZipCode", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "controller", "action", "format", "Token"]
 
   def search
-    # throw acceptable params into the user_params hash, respond with bad request if necessary
-    user_params = {}
-    params.each do |key, value|
-      if ACCEPTABLE_PARAMS.include?(key)
-        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
-          # do nothing
-        else
-          user_params["#{key}"] = value
-        end
-      else
-        respond_error("The following parameter is invalid: #{key}")
-      end
-    end
-
-    # verify user by token, site_url
-    # authenticate_referrer
-
     # construct SQL query
     if user_params.keys.count == 0
       respond_error("No parameters supplied.")
@@ -68,5 +54,38 @@ class Api::PropertiesController < ApplicationController
   end
 
   def invalid_parameters
+  end
+
+  def validate_params
+    user_params = {}
+    params.each do |key, value|
+      if ACCEPTABLE_PARAMS.include?(key)
+        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
+          # do nothing
+        else
+          user_params["#{key}"] = value
+        end
+      else
+        respond_error("The following parameter is invalid: #{key}")
+      end
+    end
+  end
+
+  def authenticate_referrer
+    if params[:Token] == nil
+      respond_error("You have not supplied a token")
+    elsif User.find_by_authentication_token(params[:Token])
+      user = User.find_by_authentication_token(params[:Token])
+
+      if user.authentication_token == NULL
+        respond_error("Your token is invalid. Please make sure your account is still active.")
+      elsif user.site_url != request.referer
+        respond_error("This site #{request.referer} is not activated. Please deactivate #{user.site_url} first.") 
+      elsif user.site_url == NULL
+        respond_error("You have not activated a site on this token yet.") 
+      end
+    else
+      respond_error("Could not find an account with this token. Please verify token.")
+    end
   end
 end
