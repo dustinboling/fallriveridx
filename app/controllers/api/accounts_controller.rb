@@ -5,13 +5,13 @@ class Api::AccountsController < ApplicationController
   before_filter :validate_params
 
   def create
-   # # set a temporary password
-   # chars = ("a".."z").to_a + ("A".."Z").to_a + (1..9).to_a 
-   # password = Array.new(8, '').collect {chars[rand(chars.size)]}.join
+    # # set a temporary password
+    # chars = ("a".."z").to_a + ("A".."Z").to_a + (1..9).to_a 
+    # password = Array.new(8, '').collect {chars[rand(chars.size)]}.join
 
-   # # sign up user
-   # @user = User.new(:username => params[:email], :password => password, :password_confirmation => password)
-   # @user.save
+    # # sign up user
+    # @user = User.new(:username => params[:email], :password => password, :password_confirmation => password)
+    # @user.save
   end
 
   def update
