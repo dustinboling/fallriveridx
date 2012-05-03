@@ -5,15 +5,29 @@ class Api::AccountsController < ApplicationController
   before_filter :validate_params
 
   def create
-    @user = User.new
-    @user.username = params[:username]
-    @user.email = params[:email]
-    # set password
-    # save
-    # send password through mailer
+   # # set a temporary password
+   # chars = ("a".."z").to_a + ("A".."Z").to_a + (1..9).to_a 
+   # password = Array.new(8, '').collect {chars[rand(chars.size)]}.join
+
+   # # sign up user
+   # @user = User.new(:username => params[:email], :password => password, :password_confirmation => password)
+   # @user.save
   end
 
   def update
+    if params[:UpdateSiteUrl] == true
+      @user = User.find_by_email(params[:authentication_token])
+      @user.site_url = request.referrer
+      @user.site_ip_address = request.remote_ip
+
+      if @user.save
+        respond_success("You have activated your subscription for this site.")
+      else
+        respond_error("There has been an error with your request, please try again.")
+      end
+    else
+      respond_error("No directive given.")
+    end
   end
 
   def invalid_parameters
@@ -38,6 +52,7 @@ class Api::AccountsController < ApplicationController
 
   def validate_params
     @user_params = {}
+
     params.each do |key, value|
       if @acceptable_params.include?(key)
         if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
@@ -50,5 +65,4 @@ class Api::AccountsController < ApplicationController
       end
     end
   end
-
 end

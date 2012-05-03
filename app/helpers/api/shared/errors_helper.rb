@@ -7,4 +7,13 @@ module Api::Shared::ErrorsHelper
       }
     end
   end
+
+  def respond_success(msg)
+    respond_to do |format|
+      format.json {
+        flash[:message] = msg
+        render :respond_success
+      }
+    end
+  end
 end

@@ -34,15 +34,26 @@ http://fallriveridx.heroku.com/api/properties/show.json?ListingID=P12345678&Toke
 ```
 
 ## ACCOUNTS API
-The property search api takes requests here:
+The accounts api takes requests here:
 
 ```ruby
 http://fallriveridx.heroku.com/api/accounts/
 ```
 
-There are currently 2 types of requests, create and update
+There are currently 2 types of requests, create and update. Create is **disabled**!
+
+### Update
+Updates an account. Right now all you can do is update the site_url field. This also updates the ip address.
+* UpdateSiteUrl =  true
+
+Here is an example request which updates a customer's active site url. It uses the referrer from the header, so whatever site is sending the request will recieve the header:
+
+```ruby
+http://fallriveridx.heroku.com/api/accounts/update.json?UpdateSiteUrl=true&Token=yourToken
+```
 
 ### Create
+**Currently Disabled**
 Creates a new account. This request requires that **all** of the following parameters be passed:
 * username
 * email (customer's email)
@@ -52,11 +63,4 @@ Here is an example request that creates a new account:
 
 ```ruby
 http://fallriveridx.heroku.com/api/accounts/create.json?username=whatever&email=example@foo.com
-```
-
-### Update
-Updates an account. Here is an example request which deactivates a customer's active site url:
-
-```ruby
-http://fallriveridx.heroku.com/api/accounts/update.json?site_url=NULL
 ```
