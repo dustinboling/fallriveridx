@@ -74,16 +74,20 @@ namespace :seed do
 
     else
       print "Committing properties for #{@current_year}:\n "
-      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
-        print "\\\r#{counter}/#{@count}"
-        @listing = Listing.new
+      begin
+        records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
+          print "\\\r#{counter}/#{@count}"
+          @listing = Listing.new
 
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+          end
+          @listing.save
+          counter = counter + 1
         end
-        @listing.save
-        counter = counter + 1
+      rescue APIError, ResponseError, HTTPError => e
+        puts "This happened: #{e}."
       end
     end
     puts "\nAll done."

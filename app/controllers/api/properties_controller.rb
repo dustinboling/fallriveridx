@@ -2,7 +2,7 @@ class Api::PropertiesController < ApplicationController
   include Api::Shared::ErrorsHelper
 
   before_filter :validate_params
-  # before_filter :authenticate_referrer
+  before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "Limit", "controller", "action", "format", "Token"]
 
@@ -53,8 +53,8 @@ class Api::PropertiesController < ApplicationController
   end
 
   def show  
-    # This action currently only supports the ListingID field plus Token for authentication.
-    # ListingID is our primary key field unless we find a problem with it.
+    # This action currently only supports the ListingID field (plus Token for authentication).
+    # ListingID is our primary key field unless we find a problem with it. 
     @listing = Listing.where(:ListingID => params[:ListingID]) 
   end
 
@@ -86,7 +86,7 @@ class Api::PropertiesController < ApplicationController
       @user = User.find_by_authentication_token(params[:Token])
 
       if @user.authentication_token == NULL
-        respond_error("Your token is invalid. Please make sure your account is still active.")
+        respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != request.referer
         respond_error("This site #{request.referer} is not activated. Please deactivate #{user.site_url} first.") 
       elsif @user.site_url == NULL
