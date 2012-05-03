@@ -19,6 +19,7 @@ http://fallriveridx.heroku.com/api/properties/search.json?ListAgentAgentID=A0000
 These are the acceptable parameters that are currently searchable from our property api:
 * City
 * ZipCode
+* BuildersTractName
 * ListAgentAgentID (This is the agent)
 * SaleAgentAgentID (This is the broker)
 * ListPrice (Must provide greater than or equal to. ex: ListPrice=>450000 will return houses listed at $450,000 or more)
