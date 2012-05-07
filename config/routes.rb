@@ -1,5 +1,11 @@
 Fallriveridx::Application.routes.draw do
 
+  get "maps/index"
+
+  get "maps/show"
+
+  get "geocode/index"
+
   # api
   namespace :api do
     get "properties/search"
@@ -7,6 +13,7 @@ Fallriveridx::Application.routes.draw do
     get "properties/invalid_parameters"
     get "accounts/create"
     get "accounts/update"
+    get "geocode/index"
   end
 
   get "home/index"

@@ -27,4 +27,7 @@ Fallriveridx::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # don't log so much stuff
+  config.log_level = :error
 end

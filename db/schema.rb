@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120502193649) do
+ActiveRecord::Schema.define(:version => 20120503181138) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -526,8 +526,8 @@ ActiveRecord::Schema.define(:version => 20120502193649) do
     t.text    "TaxParcelNumber"
     t.text    "UnitLocation"
     t.text    "View"
-    t.text    "Latitude"
-    t.text    "Longitude"
+    t.text    "latitude_old"
+    t.text    "longitude_old"
     t.text    "ThomasGuideFullMapString"
     t.integer "ThomasGuideMapPage"
     t.text    "ThomasMapXLetter"
@@ -535,6 +535,8 @@ ActiveRecord::Schema.define(:version => 20120502193649) do
     t.text    "MatchCode"
     t.boolean "GeocodeOverrideYN"
     t.decimal "ListPrice",                          :precision => 14, :scale => 2
+    t.decimal "Latitude"
+    t.decimal "Longitude"
   end
 
   create_table "subscribers", :force => true do |t|
@@ -546,7 +548,7 @@ ActiveRecord::Schema.define(:version => 20120502193649) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "username",                        :null => false
+    t.string   "username",                                       :null => false
     t.string   "email"
     t.string   "crypted_password"
     t.string   "salt"
@@ -559,6 +561,7 @@ ActiveRecord::Schema.define(:version => 20120502193649) do
     t.datetime "reset_password_email_sent_at"
     t.string   "authentication_token"
     t.text     "site_url"
+    t.string   "site_ip_address",                 :limit => nil
   end
 
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"

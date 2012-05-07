@@ -1,7 +1,7 @@
 # FALL RIVER IDX
 Hello, this is the IDX for Dustin Boling Associates real estate sites. Just your basic RESTful JSON api. Post to our url, get back the data you requested. Property data is updated every four hours with new properties, along with all of the active agents in the CARETS system.
 
-## PROPERTY SEARCH API
+## PROPERTY API
 
 ### Search
 The property search api takes requests here:
@@ -34,6 +34,17 @@ This is what a single property search looks like. It only takes one parameter, L
 http://fallriveridx.heroku.com/api/properties/show.json?ListingID=P12345678&Token=yourToken
 ```
 
+## GEOCODE API
+The geocode api takes requests here at the index action:
+
+```ruby
+http://fallriveridx.heroku.com/api/geocode/index.json?[yourQuery][yourToken]
+
+It requires the following parameters:
+* 
+*
+
+
 ## ACCOUNTS API
 The accounts api takes requests here:
 
@@ -47,7 +58,7 @@ There are currently 2 types of requests, create and update. Create is **disabled
 Updates an account. Right now all you can do is update the site_url field. This also updates the ip address.
 * UpdateSiteUrl =  true
 
-Here is an example request which updates a customer's active site url. It uses the referrer from the header, so whatever site is sending the request will recieve the header:
+Here is an example request which updates a customer's active site url. It uses the referrer from the header, so whatever site is sending the request will be the site & ip which is written to the database.
 
 ```ruby
 http://fallriveridx.heroku.com/api/accounts/update.json?UpdateSiteUrl=true&Token=yourToken

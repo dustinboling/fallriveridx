@@ -33,61 +33,38 @@ namespace :seed do
       get_count
     end
 
-    # make sure we are not running up against the query ceiling
-    # write fail to log, then quit
-    if @count >= 1000000
-      log_error("properties_seed_log.txt", "FAIL - Too many records")
-      abort("Too many records (over 1m), find a new way to split.")
-    end
-
     puts "done!"
     puts "total number of records: #{@count}"
 
-    # write to database, split into two batches if necessary
-    counter = 1
-    if @count >= 500000
-      print "Committing first half of properties for #{@current_year}:\n"
-      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-06-31)", :offset => 1, :limit => 500000) do |data|
-        print "\\\r#{count}/#{@count}"
-        @listing = Listing.new
-
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
-        end
-        @listing.save
-        counter = counter + 1
-      end
-
-      print "\n\nCommitting second half of properties for #{@current_year}:\n"
-      records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-07-01-#{@current_year}-12-31)", :offset => 500000, :limit => 500000) do |data|
-        print "\\\r#{count}/#{@count}"
-        @listing = Listing.new
-
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
-        end
-        @listing.save
-        counter = counter + 1
-      end
-
-    else
-      print "Committing properties for #{@current_year}:\n "
+    # write to database, split into batches if necessary
+    @counter = 0
+    print "Committing properties for #{@current_year}:\n "
+    split_records
+    split_records_count = @offset.count
+    batch_count = 1
+    @offset.each do |key, offset|
+      print "\nBatch #{batch_count} of #{split_records_count}"
       begin
-        records = @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 500000) do |data|
-          print "\\\r#{counter}/#{@count}"
-          @listing = Listing.new
+        @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
+          begin
+            print "\\\r#{@counter}/#{@count}"
+            @listing = Listing.new
 
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
-            @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+            fields.each do |field|
+              stripped_field = field.gsub(/'/, "")
+              @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+            end
+            @listing.save
+            @counter = @counter + 1
+          rescue Timeout::Error => e
+            puts "This happened: #{e}, retrying..."
+            redo
           end
-          @listing.save
-          counter = counter + 1
         end
-      rescue APIError, ResponseError, HTTPError => e
-        puts "This happened: #{e}."
+        batch_count = batch_count + 1
+      rescue Timeout::Error => e
+        puts "Encountered #{e} attempting retry..."
+        redo
       end
     end
     puts "\nAll done."
@@ -108,7 +85,7 @@ namespace :seed do
     f.close
 
     # all done
-    puts "Successfully added #{counter} records to the database from #{@current_year}."
+    puts "Successfully added #{@counter} records to the database from #{@current_year}."
   end
 
   desc "Initial agents seed"
@@ -135,7 +112,7 @@ namespace :seed do
 
     # write agents to the database
     print "Committing agents to the database: "
-    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :limit => 500000) do |data|
+    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A)", :limit => 1000000) do |data|
       print "."
 
       @agent = Agent.new
@@ -161,49 +138,6 @@ namespace :seed do
     puts "Successfully added #{@count} agents to the database"
   end
 
-  desc "Initial brokers seed"
-  task :brokers => :environment do
-    print "setting up client..."
-    @client = RETS::Client.login(
-      :url => "http://carets.retscure.com:6103/platinum/login",
-      :username => "CARDUSTINBOLINGASSOC",
-      :password => "sterac1071",
-      :useragent => { :name => "CARETS-General/1.0" }
-    )
-
-    puts "ok!"
-
-    puts "populating fields array..."
-    csv = CSV.read("#{Dir.pwd}/agent_fields.txt")
-    fields = csv.shift.map { |i| i.to_s }
-
-    # get a count of active brokers
-    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :count_mode => :both, :limit => 1) do |data|
-      @count = @client.rets_data[:count].to_i
-    end
-    puts "There are currently #{@count} active brokers in CARETS."
-
-    # write brokers to the database
-    print "Committing brokers to the database: "
-    @client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentStatus=|A),(AgentRole=|Broker)", :limit => 500000) do |data|
-      print "#{data['AgentID']}/"
-
-      @broker = Broker.new
-      fields.each do |field|
-        stripped_field = field.gsub(/'/, "")
-        @broker["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
-      end
-      @broker.save
-    end
-
-    # write success to log
-    puts "\nWriting to log..."
-    log_success("brokers_seed_log.txt", false)
-
-    # all done
-    puts "Successfully added #{@count} brokers to the database."
-  end
-
   desc "Initial property media seed"
   task :media => :environment do
     print "setting up client..."
@@ -222,15 +156,15 @@ namespace :seed do
     # count prop_media since 2004
 
     # split into groups of 500,000 or less
-    if @count > 500000
+    if @count > 1000000
       puts "splitting up count"
-      splits = (@count / 500000.0).ceil
+      splits = (@count / 1000000.0).ceil
       puts "splitting up into #{splits} groups"
 
-      # set counters, container
+      # set @counters, container
       n = 1
       low = 1
-      high = 500000
+      high = 1000000
       split_ranges = {}
 
       # set ranges
@@ -241,9 +175,9 @@ namespace :seed do
         # set values to hash
         split_ranges["range#{n}"] = [low, high]
 
-        # increment counters
-        low = low + 500000
-        high = high + 500000
+        # increment @counters
+        low = low + 1000000
+        high = high + 1000000
         n = n + 1
       end
     else
@@ -255,7 +189,7 @@ namespace :seed do
       offset = value[0]
 
       # query 
-      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 500000) do |data|
+      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 1000000) do |data|
         @listing_media = ListingMedia.new
 
         fields.each do |field|
@@ -270,7 +204,7 @@ namespace :seed do
   ###
   # procedures
   def get_count
-    @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 1) do |data|
+    @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 200) do |data|
       @count = @client.rets_data[:count].to_i
     end
   end
@@ -283,10 +217,26 @@ namespace :seed do
     f.close
   end
 
+  def split_records
+    split_count = (@count / 10000.0).ceil
+    @offset = {}
+
+    offset_count = 0
+    split_count.times do |i|
+      i = i + 1 
+      if i == 1
+        @offset["offset#{i}"] = i
+      else
+        @offset["offset#{i}"] = offset_count
+      end
+      offset_count = offset_count + 10000
+    end
+  end
+
   def log_success(file, year)
     if year == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{counter}\n")
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
       f.close
     else
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')

@@ -10,7 +10,10 @@ Listings:
     :LotSizeSQFT
     :Limit
     :ListingID
+    :Latitude
+    :Longitude
   Multi-
+    :Latitude AND :Longitude AND :ListingStatus
 
 Users:
   :authentication_token
