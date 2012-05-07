@@ -16,9 +16,9 @@ class Api::GeocodeController < ApplicationController
 
     # find records between the given parameters 
     if ne_long > sw_long
-      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" > #{sw_long} AND \"Longitude\" < #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) AND \"ListingStatus\" = ACTIVE")
+      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" > #{sw_long} AND \"Longitude\" < #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) LIMIT 3;")
     else
-      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" >= #{sw_long} AND \"Longitude\" <= #{ne_long}) AND (\"Latitude\" > #{sw_lat} AND \"Latitude\" < #{ne_lat}) AND \"ListingStatus\" = ACTIVE")
+      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" >= #{sw_long} AND \"Longitude\" <= #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) LIMIT 3;")
     end
 
     # put LatLng details into the markers hash
@@ -28,6 +28,10 @@ class Api::GeocodeController < ApplicationController
     @listings.each do |l|
       @markers["marker#{i}"] = [l.Latitude, l.Longitude]
       i = i + 1
+    end
+
+    if @markers.count == 0
+      respond_error("No matches found")
     end
 
     ### common point method

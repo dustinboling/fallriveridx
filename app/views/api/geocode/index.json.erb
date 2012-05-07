@@ -1,7 +1,10 @@
-{ "markers":
-<% @markers.each do |key, value| %>
-  {
-    <%= "#{key}: #{value}" %>
-  }
+{ "markers": {
+<% @markers.each_with_index do |(key, value), i| %>
+  <% if i == @markers.length - 1 %>
+    "<%= key %>": <%= value.collect {|v| v.to_f} %>
+  <% else %>
+    "<%= key %>": <%= value.collect {|v| v.to_f} %>,
+  <% end %>
 <% end %>
+}
 }
