@@ -25,7 +25,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * ListPrice (Must provide greater than or equal to. ex: ListPrice=>450000 will return houses listed at $450,000 or more)
 * BedroomsTotal (returns greater than or equal to the number given)
 * BathsTotal (returns greater than or equal to the number given)
-* LotSizeSQFT (returns greater than or equal to the number given)
+* BuildingSizeSQFT (returns greater than or equal to the number given)
 
 ### Show (Single Property Details)
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.
@@ -39,10 +39,22 @@ The geocode api takes requests here at the index action:
 
 ```ruby
 http://fallriveridx.heroku.com/api/geocode/index.json?[yourQuery][yourToken]
+```
 
-It requires the following parameters:
-* 
-*
+### Boundary Search
+It requires the following parameters, using only these will return at maximum 40 homes from within the boundary area. 
+* ne_long 
+* ne_lat 
+* sw_long
+* sw_lat
+
+In addition to the required parameters you can also pass in the following:
+* ListPrice
+* BedroomsTotal
+* BathsTotal
+* BuildingSizeSQFT
+
+### Search by City
 
 
 ## ACCOUNTS API

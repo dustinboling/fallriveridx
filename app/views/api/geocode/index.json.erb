@@ -1,10 +1,22 @@
 { "markers": {
 <% @markers.each_with_index do |(key, value), i| %>
+  "<%= key %>": {
   <% if i == @markers.length - 1 %>
-    "<%= key %>": <%= value.collect {|v| v.to_f} %>
+    "LatLng": <%= value["LatLng"].collect {|v| v.to_f } %>,
+    "ListPrice": "<%= number_to_currency(value["ListPrice"]) %>",
+    "Address": "<%= value["Address"].titleize %>",
+    "Bedrooms": "<%= value["Bedrooms"] %>",
+    "Baths": "<%= value["Baths"] %>",
+    "SQFT": "<%= value["SQFT"] %>"
+    }
   <% else %>
-    "<%= key %>": <%= value.collect {|v| v.to_f} %>,
+    "LatLng": <%= value["LatLng"].collect {|v| v.to_f } %>,
+    "ListPrice": "<%= number_to_currency(value["ListPrice"]) %>",
+    "Address": "<%= value["Address"].titleize %>",
+    "Bedrooms": "<%= value["Bedrooms"] %>",
+    "Baths": "<%= value["Baths"] %>",
+    "SQFT": "<%= value["SQFT"] %>" 
+    },
   <% end %>
 <% end %>
-}
-}
+} }

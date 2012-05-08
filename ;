@@ -1,7 +1,0 @@
-{ "markers":
-<% @markers.each do |key, value| %>
-  {
-    <%= "'#{key}': #{value.to_f}" %>
-  }
-<% end %>
-}

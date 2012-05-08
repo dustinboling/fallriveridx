@@ -4,7 +4,7 @@ class Api::GeocodeController < ApplicationController
 
   before_filter :validate_params
 
-  ACCEPTABLE_PARAMS = ["ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format"]
+  ACCEPTABLE_PARAMS = ["Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format"]
 
   def index
     ### boundary method
@@ -14,19 +14,49 @@ class Api::GeocodeController < ApplicationController
     ne_lat = params[:ne_lat]
     sw_lat = params[:sw_lat]
 
-    # find records between the given parameters 
-    if ne_long > sw_long
-      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" > #{sw_long} AND \"Longitude\" < #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) LIMIT 3;")
-    else
-      @listings = Listing.find_by_sql("SELECT * FROM listings WHERE (\"Longitude\" >= #{sw_long} AND \"Longitude\" <= #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) LIMIT 3;")
+    # contruct additional @query params
+    @query = "SELECT * FROM listings WHERE "
+    @user_params.each do |key, value|
+      if /ListPrice/.match(key)
+        price_exp = "/\A" + params[:ListPrice] + "/"
+        if price_exp.match('>')
+          @query = @query + "\"ListPrice\" > '#{value[1..-1]}' AND "
+        elsif price_exp.match('<')
+          @query = @query + "\"ListPrice\" < '#{value[1..-1]}' AND "
+        else
+          respond_error("Could not parse ListPrice")
+        end
+      elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key)
+        @query = @query + "\"#{key}\" >= '#{value}' AND "
+      elsif /Limit/.match(key)
+        @query_limit = " LIMIT #{value}"
+      else
+        @query = @query + "\"#{key}\" = '#{value}' AND "
+      end
     end
 
-    # put LatLng details into the markers hash
-    # *may be slower than pushing up the attributes directly...
-    @markers = {}
+    # append boundary parameters, execute search
+    if ne_long > sw_long
+      @query = @query + "(\"Longitude\" > #{sw_long} AND \"Longitude\" < #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat}) AND \"ListingStatus\" = 'ACTIVE'"
+      add_limit
+      @listings = Listing.find_by_sql(@query)
+    else
+      @query = @query + "(\"Longitude\" >= #{sw_long} AND \"Longitude\" <= #{ne_long}) AND (\"Latitude\" >= #{sw_lat} AND \"Latitude\" <= #{ne_lat})" 
+      add_limit
+      @listings = Listing.find_by_sql(@query)
+    end
+
+    # this line creates an infinite-level nested hash
+    @markers = Hash.new { |k,v| k[v] = Hash.new(&k.default_proc) }
+
     i = 1
     @listings.each do |l|
-      @markers["marker#{i}"] = [l.Latitude, l.Longitude]
+      @markers["marker#{i}"]["LatLng"] = [l.Latitude, l.Longitude]
+      @markers["marker#{i}"]["ListPrice"] = l.ListPrice.to_i
+      @markers["marker#{i}"]["Address"] = l.FullStreetAddress
+      @markers["marker#{i}"]["Bedrooms"] = l.BedroomsTotal
+      @markers["marker#{i}"]["Baths"] = l.BathsTotal
+      @markers["marker#{i}"]["SQFT"] = l.BuildingSize
       i = i + 1
     end
 
@@ -42,7 +72,14 @@ class Api::GeocodeController < ApplicationController
     # add params to @user_params hash
     params.each do |key, value|
       if ACCEPTABLE_PARAMS.include?(key)
-        if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
+        if /action/.match(key) || 
+           /controller/.match(key) || 
+           /format/.match(key) || 
+           /Token/.match(key) || 
+           /ne_lat/.match(key) || 
+           /ne_long/.match(key) || 
+           /sw_lat/.match(key) || 
+           /sw_long/.match(key)
           # do nothing
         else
           @user_params["#{key}"] = value
@@ -53,11 +90,10 @@ class Api::GeocodeController < ApplicationController
     end
 
     # make sure all boundaries are present
-    if !@user_params.include?("ne_long" && "sw_long" && "ne_lat" && "sw_lat")
+    if !params.include?("ne_long" && "sw_long" && "ne_lat" && "sw_lat")
       respond_error("You must include all four geocode parameters.")
     else
       # do nothing
     end
   end
-
 end

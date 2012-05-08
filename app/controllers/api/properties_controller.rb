@@ -4,7 +4,7 @@ class Api::PropertiesController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "LotSizeSQFT", "Limit", "controller", "action", "format", "Token"]
+  ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSizeSQFT", "Limit", "controller", "action", "format", "Token"]
 
   def search
     # construct SQL query

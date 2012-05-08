@@ -25,6 +25,7 @@ fallriver IDX - TODO
 #19 - test api controller. rigorously.
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 #21 - drop brokers table
+#22 - add streetview link to InfoWindow for maps
 
 
 COMPLETED
