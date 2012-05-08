@@ -3,7 +3,7 @@ module Api::GeocodeHelper
     if @query_limit
       @query = @query + @query_limit
     else
-      @query = @query + " LIMIT 4"
+      @query = @query + " LIMIT 10"
     end  
   end
 end
