@@ -85,7 +85,7 @@ class Api::PropertiesController < ApplicationController
     elsif User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
 
-      if @user.authentication_token == NULL
+      if @user.authentication_token == "NULL"
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != request.referer
         respond_error("This site #{request.referer} is not activated. Please deactivate #{user.site_url} first.") 
