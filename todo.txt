@@ -26,6 +26,7 @@ fallriver IDX - TODO
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 #21 - drop brokers table
 #22 - add streetview link to InfoWindow for maps
+#23 - fix search.json public remarks (works local, not on heroku)
 
 
 COMPLETED
