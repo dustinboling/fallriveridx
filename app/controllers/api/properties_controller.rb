@@ -93,7 +93,7 @@ class Api::PropertiesController < ApplicationController
         respond_error("You have not activated a site on this token yet.") 
       end
     else
-      respond_error("Could not find an account with this token. Please verify token.")
+      respond_error("Could not find an account with this API key. Please verify and update your API key.")
     end
   end
 end
