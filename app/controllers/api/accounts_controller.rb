@@ -16,14 +16,18 @@ class Api::AccountsController < ApplicationController
 
   def update
     if params[:UpdateSiteUrl] == "true"
-      @user = User.find_by_email(params[:authentication_token])
-      @user.site_url = request.referrer
-      @user.site_ip_address = request.remote_ip
+      if User.find_by_authentication_token(params[:authentication_token])
+        @user = User.find_by_authentication_token(params[:authentication_token])
+        @user.site_url = request.referrer
+        @user.site_ip_address = request.remote_ip
 
-      if @user.save
-        respond_success("You have activated your subscription for this site.")
-      else
-        respond_error("There has been an error with your request, please try again.")
+        if @user.save
+          respond_success("You have activated your subscription for this site.")
+        else
+          respond_error("There has been an error with your request, please try again.")
+        end
+      else 
+        respond_error("Invalid API key.")
       end
     else
       respond_error("No directive given.")
