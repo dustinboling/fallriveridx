@@ -2,7 +2,7 @@ class Api::PropertiesController < ApplicationController
   include Api::Shared::ErrorsHelper
 
   before_filter :validate_params
-  # before_filter :authenticate_referrer
+  before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
 
@@ -80,7 +80,7 @@ class Api::PropertiesController < ApplicationController
 
   # change @user to user unless we need the instance varible up above
   def authenticate_referrer
-    if params[:Token] == nil
+    if params[:Token] == "" || nil
       respond_error("You have not supplied a token")
     elsif User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
