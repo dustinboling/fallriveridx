@@ -18,7 +18,8 @@ class Api::AccountsController < ApplicationController
     if params[:UpdateSiteUrl] == "true"
       if User.find_by_authentication_token(params[:Token])
         @user = User.find_by_authentication_token(params[:Token])
-        @user.site_url = request.env['HTTP_REFERER']
+
+        @user.site_url = "#{request.env['HTTP_REFERER']}"
         @user.site_ip_address = request.remote_ip
 
         if @user.save
