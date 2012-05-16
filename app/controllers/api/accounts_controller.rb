@@ -19,7 +19,7 @@ class Api::AccountsController < ApplicationController
       if User.find_by_authentication_token(params[:Token])
         @user = User.find_by_authentication_token(params[:Token])
 
-        @user.site_url = request.env['REMOTE_HOST'] + request.env['REMOTE_ADDR'] + '/' + request.env['REQUEST_URI']
+        @user.site_url = request.env['REMOTE_HOST'] + request.env['REMOTE_ADDR'] + request.env['REQUEST_URI']
         @user.site_ip_address = request.remote_ip
 
         if @user.save
