@@ -4,7 +4,7 @@ class Api::PropertiesController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
+  ACCEPTABLE_PARAMS = ["SiteUrl", "ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
 
   def search
     # construct SQL query
@@ -69,6 +69,8 @@ class Api::PropertiesController < ApplicationController
       if ACCEPTABLE_PARAMS.include?(key)
         if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
           # do nothing
+        elsif !params.include?("SiteUrl")
+          respond_error("You must include the SiteUrl parameter")
         else
           @user_params["#{key}"] = value
         end
@@ -87,7 +89,7 @@ class Api::PropertiesController < ApplicationController
 
       if @user.authentication_token == "NULL"
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
-      elsif @user.site_url != request.referer
+      elsif @user.site_url != params[:SiteUrl]
         respond_error("This site (#{request.referer}) is not activated. Please activate this site, then try again.")
       elsif @user.site_url == "NULL"
         respond_error("You have not activated a site on this token yet.") 
