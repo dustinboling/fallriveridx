@@ -15,7 +15,7 @@ class Api::AccountsController < ApplicationController
   end
 
   def update
-    if params[:UpdateSiteUrl] == true
+    if params[:UpdateSiteUrl] == "true"
       @user = User.find_by_email(params[:authentication_token])
       @user.site_url = request.referrer
       @user.site_ip_address = request.remote_ip
@@ -46,7 +46,7 @@ class Api::AccountsController < ApplicationController
         respond_error("You did not include an email address.")
       end
     when "update"
-      @acceptable_params = ["UpdateSiteUrl", "controller", "action", "format"]
+      @acceptable_params = ["UpdateSiteUrl", "Token", "controller", "action", "format"]
     end
   end
 
