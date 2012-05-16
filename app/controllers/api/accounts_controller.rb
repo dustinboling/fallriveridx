@@ -46,7 +46,7 @@ class Api::AccountsController < ApplicationController
         respond_error("You did not include an email address.")
       end
     when "update"
-      @acceptable_params = ["site_url", "controller", "action", "format"]
+      @acceptable_params = ["UpdateSiteUrl", "controller", "action", "format"]
     end
   end
 
