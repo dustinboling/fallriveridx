@@ -3,7 +3,7 @@ module Api::Shared::ErrorsHelper
     respond_to do |format|
       format.json {
         flash[:message] = msg
-        render :respond_fail
+        render :respond_fail and return
       }
     end
   end
@@ -12,7 +12,7 @@ module Api::Shared::ErrorsHelper
     respond_to do |format|
       format.json {
         flash[:message] = msg
-        render :respond_success
+        render :respond_success and return
       }
     end
   end
