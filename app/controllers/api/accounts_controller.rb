@@ -16,8 +16,8 @@ class Api::AccountsController < ApplicationController
 
   def update
     if params[:UpdateSiteUrl] == "true"
-      if User.find_by_authentication_token(params[:authentication_token])
-        @user = User.find_by_authentication_token(params[:authentication_token])
+      if User.find_by_authentication_token(params[:Token])
+        @user = User.find_by_authentication_token(params[:Token])
         @user.site_url = request.referrer
         @user.site_ip_address = request.remote_ip
 
