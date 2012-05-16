@@ -15,23 +15,19 @@ class Api::AccountsController < ApplicationController
   end
 
   def update
-    if params[:UpdateSiteUrl] == "true"
-      if User.find_by_authentication_token(params[:Token])
-        @user = User.find_by_authentication_token(params[:Token])
+    if User.find_by_authentication_token(params[:Token])
+      @user = User.find_by_authentication_token(params[:Token])
 
-        @user.site_url = request.env['REMOTE_ADDR'] + '/' + request.env['REQUEST_URI']
-        @user.site_ip_address = request.remote_ip
+      @user.site_url = request.env['REMOTE_HOST'] + ['REMOTE_ADDR'] + request.env['REQUEST_URI']
+      @user.site_ip_address = request.remote_ip
 
-        if @user.save
-          respond_success("You have activated your subscription for this site.")
-        else
-          respond_error("There has been an error with your request, please try again.")
-        end
-      else 
-        respond_error("Invalid API key.")
+      if @user.save
+        respond_success("You have activated your subscription for this site.")
+      else
+        respond_error("There has been an error with your request, please try again.")
       end
-    else
-      respond_error("No directive given.")
+    else 
+      respond_error("Invalid API key.")
     end
   end
 
@@ -51,7 +47,7 @@ class Api::AccountsController < ApplicationController
         respond_error("You did not include an email address.")
       end
     when "update"
-      @acceptable_params = ["UpdateSiteUrl", "Token", "controller", "action", "format"]
+      @acceptable_params = ["SiteUrl", "Token", "controller", "action", "format"]
     end
   end
 
@@ -62,6 +58,8 @@ class Api::AccountsController < ApplicationController
       if @acceptable_params.include?(key)
         if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
           # do nothing
+        elsif !params.include?("SiteUrl")
+          respond_error("You did not include a SiteUrl.")
         else
           @user_params["#{key}"] = value
         end
