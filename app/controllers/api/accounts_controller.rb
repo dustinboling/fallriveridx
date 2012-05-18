@@ -4,6 +4,16 @@ class Api::AccountsController < ApplicationController
   before_filter :set_acceptable_params
   before_filter :validate_params
 
+  def show
+    if User.find_by_authentication_token(params[:Token])
+      @user = User.find_by_authentication_token(params[:Token])
+    elsif !params[:Token]
+      respond_error("No token supplied.")
+    else
+      respond_error("Authentication token invalid.")
+    end 
+  end
+
   def create
     # # set a temporary password
     # chars = ("a".."z").to_a + ("A".."Z").to_a + (1..9).to_a 

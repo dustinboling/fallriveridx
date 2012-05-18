@@ -64,7 +64,16 @@ The accounts api takes requests here:
 http://fallriveridx.heroku.com/api/accounts/
 ```
 
-There are currently 2 types of requests, create and update. Create is **disabled**!
+There are currently 3 types of requests: show, create and update. Create is **disabled**!
+
+### Show
+Gets basic details for an account. Anything needed for verifying that an account is valid. It accepts the following fields:
+* Token
+
+Example:
+``` ruby
+http://fallriveridx.heroku.com/api/accounts.show.json?Token=yourToken
+```
 
 ### Update
 Updates an account. Right now all you can do is update the site_url field. This also updates the ip address.
