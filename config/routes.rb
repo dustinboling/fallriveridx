@@ -13,6 +13,7 @@ Fallriveridx::Application.routes.draw do
     get "properties/invalid_parameters"
     get "accounts/create"
     get "accounts/update"
+    get "accounts/show"
     get "geocode/index"
   end
 
