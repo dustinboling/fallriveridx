@@ -10,7 +10,7 @@ class Api::AccountsController < ApplicationController
     elsif !params[:Token]
       respond_error("No token supplied.")
     else
-      respond_error("Authentication token invalid.")
+      respond_error("Invalid API key.")
     end 
   end
 
