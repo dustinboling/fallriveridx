@@ -52,7 +52,7 @@ class Api::AccountsController < ApplicationController
       @acceptable_params = ["Token", "controller", "action", "format"]
       
       if !params.include?("username")
-        respond_error("You did not include a Token."
+        respond_error("You did not include a Token.")
       end
     when "create"
       @acceptable_params = ["username", "email", "controller", "action", "format"]
