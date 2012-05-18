@@ -48,6 +48,12 @@ class Api::AccountsController < ApplicationController
   # filters
   def set_acceptable_params
     case action_name
+    when "show"
+      @acceptable_params = ["Token", "controller", "action", "format"]
+      
+      if !params.include?("username")
+        respond_error("You did not include a Token."
+      end
     when "create"
       @acceptable_params = ["username", "email", "controller", "action", "format"]
 
