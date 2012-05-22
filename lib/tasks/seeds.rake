@@ -47,7 +47,7 @@ namespace :seed do
       begin
         @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
           begin
-            print "\\\r#{@counter}/#{@count}"
+            print "\r#{@counter}/#{@count}"
             @listing = Listing.new
 
             fields.each do |field|
@@ -153,52 +153,91 @@ namespace :seed do
     csv = CSV.read("#{Dir.pwd}/prop_media_fields.txt")
     fields = csv.shift.map { |i| i.to_s }
 
-    # count prop_media since 2004
+    puts "figuring out which month and year to write..."
+    last_line = `tail -n 1 #{Dir.pwd}/last_yearmonth.csv`
+    last_line_ary = last_line.gsub(/\n/, '').gsub(/ /, '').split(',')
+    last_year = last_line_ary[0].to_i
+    last_month = last_line_ary[1].to_i
 
-    # split into groups of 500,000 or less
-    if @count > 1000000
-      puts "splitting up count"
-      splits = (@count / 1000000.0).ceil
-      puts "splitting up into #{splits} groups"
-
-      # set @counters, container
-      n = 1
-      low = 1
-      high = 1000000
-      split_ranges = {}
-
-      # set ranges
-      splits.times do |i|
-        # fix 0 offset of the times function
-        i = i + 1
-
-        # set values to hash
-        split_ranges["range#{n}"] = [low, high]
-
-        # increment @counters
-        low = low + 1000000
-        high = high + 1000000
-        n = n + 1
-      end
+    # increment year/month
+    if last_month == 12
+      @current_year = last_year + 1
+      @current_month = to_padded_month(1)
     else
-      puts "no need to split up count, moving on..."
+      @current_year = last_year
+      @current_month = to_padded_month(last_month + 1)
     end
 
-    # add them to the database
-    split_ranges.each do |key, value|
-      offset = value[0]
+    # set days in month
+    if ["01", "03", "05", "07", "08", "10", "12"].include?(@current_month)
+      @last_day_in_month = "31"
+    elsif ["04", "06", "09", "11"].include?(@current_month)
+      @last_day_in_month = "30"
+    elsif @current_month == "02" && @current_year == 2012
+      @last_day_in_month = "29"
+    elsif @current_month == "02"
+      @last_day_in_month = "28"
+    else
+      abort("Could not set current month")
+    end
 
-      # query 
-      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "()", :offset => offset, :limit => 1000000) do |data|
-        @listing_media = ListingMedia.new
+    # count prop_media since for current month and year
+    puts "Counting records for #{@current_year}-#{@current_month}..."
+    begin
+      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "(PropMediaCreatedTimestamp=#{@current_year}-#{@current_month}-01T00:00:00-#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),(PropertyType=|Residential)", :count_mode => :both, :limit => 1) do |data|
+        @count = @client.rets_data[:count].to_i
+      end
+    rescue Timeout::Error
+      puts "Retrying..."
+      retry
+    end
 
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listingmedia["#{stripped_field}"] = data["#{stripped_field}"]
+    # add to database
+    split_records
+    split_records_count = @offset.count
+    batch_count = 1
+
+    puts "done!"
+    puts "total number of records: #{@count}"
+    puts "Adding property media for #{@current_year}-#{@current_month}..."
+    @counter = 0
+    @offset.each do |key, offset|
+      print "\nBatch #{batch_count} of #{split_records_count}"
+      begin
+        @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "(PropMediaCreatedTimestamp=#{@current_year}-#{@current_month}-01T00:00:00-#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),(PropertyType=|Residential)", :offset => offset, :limit => 10000) do |data|
+          print "\r#{@counter}/#{@count}"
+          @property_media = PropertyMedia.new
+
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @property_media["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          @property_media.save
+          @counter = @counter + 1
         end
-        @listing_media.save
+        batch_count = batch_count + 1
+      rescue Timeout::Error
+        puts "Rescuing from timeout..."
+        redo
       end
     end
+
+    # write success to log
+    puts "Writing to log..."
+    log_success("property_media_seed_log.txt", true, true)
+
+    # store unix timestamp
+    f = File.open("#{Dir.pwd}/log/last_property_media_update.txt", 'a')
+    f.write("#{DateTime.now.to_time.to_i}\n")
+    f.close
+
+    # store last position (year, month)
+    f = File.open("#{Dir.pwd}/last_yearmonth.csv", 'a')
+    f.write("#{@current_year}, #{@current_month}\n")
+    f.close
+
+    # all done, note that the last record is a rets_data so we subtract it from the count.
+    puts "Successfully added #{@counter - 1} records to the database from #{@current_year}-#{@current_month}."
   end
 
   ###
@@ -218,7 +257,10 @@ namespace :seed do
   end
 
   def split_records
-    split_count = (@count / 10000.0).ceil
+    if !@count 
+      abort("Count failed!")
+    end
+    split_count = (@count.to_f / 10000.0).ceil
     @offset = {}
 
     offset_count = 0
@@ -233,8 +275,12 @@ namespace :seed do
     end
   end
 
-  def log_success(file, year)
-    if year == true
+  def log_success(file, year, month)
+    if year == true && month == true
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@current_month}, #{@count}, #{@counter}\n")
+      f.close
+    elsif year == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
       f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
       f.close
@@ -242,6 +288,14 @@ namespace :seed do
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
       f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@count}\n")
       f.close
+    end
+  end
+
+  def to_padded_month(month)
+    if month <= 9
+      return  '0' + month.to_s
+    else
+      return month.to_s 
     end
   end
 end

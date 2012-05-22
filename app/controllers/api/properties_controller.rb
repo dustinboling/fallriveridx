@@ -4,7 +4,7 @@ class Api::PropertiesController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["ListingID", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
+  ACCEPTABLE_PARAMS = ["ListingID", "FullStreetAddress", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
 
   def search
     # construct SQL query
@@ -53,9 +53,13 @@ class Api::PropertiesController < ApplicationController
   end
 
   def show  
-    # This action currently only supports the ListingID field (plus Token for authentication).
-    # ListingID is our primary key field unless we find a problem with it. 
-    @listing = Listing.where(:ListingID => params[:ListingID]) 
+    # This action currently only supports the ListingID field OR FullStreetAddress (plus Token for authentication).
+    # Listing ID is preferred as it is a better, more performant key.
+    if params[:ListingID]
+      @listing = Listing.where(:ListingID => params[:ListingID]) 
+    elsif params[:FullStreetAddress]
+      @listing = Listing.where(:FullStreetAddress => params[:FullStreetAddress])
+    end
   end
 
   def invalid_parameters

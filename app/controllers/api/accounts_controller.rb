@@ -4,6 +4,8 @@ class Api::AccountsController < ApplicationController
   before_filter :set_acceptable_params
   before_filter :validate_params
 
+  # TODO: need something to set authentication token to when an account is unpaid
+  # this way we can return "Account is not payed" as a respond_error
   def show
     if User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])

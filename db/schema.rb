@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120503181138) do
+ActiveRecord::Schema.define(:version => 20120521212105) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -526,8 +526,6 @@ ActiveRecord::Schema.define(:version => 20120503181138) do
     t.text    "TaxParcelNumber"
     t.text    "UnitLocation"
     t.text    "View"
-    t.text    "latitude_old"
-    t.text    "longitude_old"
     t.text    "ThomasGuideFullMapString"
     t.integer "ThomasGuideMapPage"
     t.text    "ThomasMapXLetter"
@@ -537,6 +535,32 @@ ActiveRecord::Schema.define(:version => 20120503181138) do
     t.decimal "ListPrice",                          :precision => 14, :scale => 2
     t.decimal "Latitude"
     t.decimal "Longitude"
+  end
+
+  create_table "property_media", :force => true do |t|
+    t.text    "PropObjectKey"
+    t.text    "PropMediaKey"
+    t.text    "PropMediaType"
+    t.text    "PropMediaExternalKey"
+    t.integer "PropItemNumber"
+    t.text    "PropMediaDisplayOrder"
+    t.text    "PropMediaSize"
+    t.text    "PropMimeType"
+    t.text    "PropMediaBytes"
+    t.text    "PropMediaFileName"
+    t.text    "PropMediaCaption"
+    t.text    "PropMediaDescription"
+    t.text    "PropMediaURL"
+    t.date    "PropMediaCreatedTimestamp"
+    t.date    "PropMediaModificationTimestamp"
+    t.text    "County"
+    t.text    "PropMediaSystemLocale"
+    t.text    "PropMediaSubSystemLocale"
+    t.text    "UniqueID"
+    t.text    "ListingID"
+    t.text    "PropertyType"
+    t.text    "PropMediaPixelLength"
+    t.text    "PropMediaPixelWidth"
   end
 
   create_table "subscribers", :force => true do |t|

@@ -27,6 +27,7 @@ fallriver IDX - TODO
 #21 - drop brokers table
 #22 - add streetview link to InfoWindow for maps
 #23 - fix search.json public remarks (works local, not on heroku)
+#24 - make sure that we are actually getting all historical datas
 
 
 COMPLETED
