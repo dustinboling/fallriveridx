@@ -74,7 +74,7 @@ class Api::GeocodeController < ApplicationController
       respond_error("No results found")
     else
       if gc.count > 1
-        respond_fail("Too many results, please make your search more specific.")
+        respond_error("Too many results, please make your search more specific.")
       else
         loc = gc.first.geometry["location"]
         latlng = "#{loc["lat"]}, #{loc["lng"]}"
