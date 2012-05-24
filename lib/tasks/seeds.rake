@@ -161,64 +161,144 @@ namespace :seed do
 
     # increment year/month
     if last_month == 12
-      @current_year = last_year + 1
+      @current_year = (last_year + 1).to_s
       @current_month = to_padded_month(1)
     else
-      @current_year = last_year
+      @current_year = last_year.to_s
       @current_month = to_padded_month(last_month + 1)
     end
 
     # set days in month
-    if ["01", "03", "05", "07", "08", "10", "12"].include?(@current_month)
-      @last_day_in_month = "31"
-    elsif ["04", "06", "09", "11"].include?(@current_month)
-      @last_day_in_month = "30"
-    elsif @current_month == "02" && @current_year == 2012
-      @last_day_in_month = "29"
-    elsif @current_month == "02"
-      @last_day_in_month = "28"
-    else
-      abort("Could not set current month")
-    end
+    calculate_last_day_in_month
+    puts "last day in month is: #{@last_day_in_month}"
 
     # count prop_media since for current month and year
     puts "Counting records for #{@current_year}-#{@current_month}..."
     begin
-      @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "(PropMediaCreatedTimestamp=#{@current_year}-#{@current_month}-01T00:00:00-#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),(PropertyType=|Residential)", :count_mode => :both, :limit => 1) do |data|
+      query = "(PropMediaCreatedTimestamp="
+      query = query + "#{@current_year}-#{@current_month}-01T00:00:00-"
+      query = query + "#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),"
+      query = query + "(PropertyType=|Residential)"
+      options =  {:search_type => :Media, :class => :PROP_MEDIA, :query => query, :count_mode => :both, :limit => 1}
+
+      @client.search(options) do |data|
         @count = @client.rets_data[:count].to_i
       end
     rescue Timeout::Error
       puts "Retrying..."
       retry
     end
+    puts "count is: #{@count}..."
 
-    # add to database
-    split_records
-    split_records_count = @offset.count
-    batch_count = 1
+    if @count > 500000
+      number_of_batches = (@count / 500000).ceil
+      @days = (1..@last_day_in_month.to_i).to_a
 
-    puts "done!"
-    puts "total number of records: #{@count}"
-    puts "Adding property media for #{@current_year}-#{@current_month}..."
-    @counter = 0
-    @offset.each do |key, offset|
-      print "\nBatch #{batch_count} of #{split_records_count}"
-      begin
-        @client.search(:search_type => :Media, :class => :PROP_MEDIA, :query => "(PropMediaCreatedTimestamp=#{@current_year}-#{@current_month}-01T00:00:00-#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),(PropertyType=|Residential)", :offset => offset, :limit => 10000) do |data|
-          print "\r#{@counter}/#{@count}"
-          @property_media = PropertyMedia.new
+      check_every_day_for_limit
 
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
-            @property_media["#{stripped_field}"] = data["#{stripped_field}"]
+      i = 1
+      @days.each do |day|
+        puts "Doing batch ##{i} for #{@current_year}-#{@current_month}..."
+        begin
+          query = "(PropMediaCreatedTimestamp="
+          query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(i)}T00:00:00-"
+          query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(i)}T23:59:59),"
+          query = query + "(PropertyType=|Residential)"
+          options =  {:search_type => :Media, :class => :PROP_MEDIA, :query => query, :count_mode => :both, :limit => 1}
+
+          @client.search(options) do |data|
+            @count = @client.rets_data[:count].to_i
           end
-          @property_media.save
-          @counter = @counter + 1
+
+          if @count > 500000
+            abort("Too many in this split")
+          end
+        rescue Timeout::Error
+          puts "Retrying..."
+          retry
         end
-        batch_count = batch_count + 1
-      rescue Timeout::Error
-        puts "Rescuing from timeout..."
-        redo
+
+        # add to database
+        split_records
+        split_records_count = @offset.count
+        batch_count = 1
+
+        puts "total number of records: #{@count}"
+        puts "Adding property media for #{@current_year}-#{@current_month}-#{i}..."
+        @counter = 0
+        @offset.each do |key, offset|
+          print "\nBatch #{batch_count} of #{split_records_count}\n"
+          begin
+            query = "(PropMediaCreatedTimestamp="
+            query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(i)}T00:00:00-"
+            query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(i)}T23:59:59),"
+            query = query + "(PropertyType=|Residential)"
+            options = {:search_type => :Media, :class => :PROP_MEDIA, :query => query, :offset => offset, :limit => 10000 }
+
+            @client.search(options) do |data|
+              print "\r#{@counter}/#{@count}"
+              @property_media = PropertyMedia.new
+
+              fields.each do |field|
+                stripped_field = field.gsub(/'/, "")
+                @property_media["#{stripped_field}"] = data["#{stripped_field}"]
+              end
+              @property_media.save
+              @counter = @counter + 1
+            end
+            batch_count = batch_count + 1
+          rescue Timeout::Error
+            puts "Rescuing from timeout..."
+            redo
+          end
+        end
+        puts "\nWriting to log..."
+        log_success("property_media_seed_log.txt", true, true)
+        i = i + 1
+      end
+      # store unix timestamp
+      f = File.open("#{Dir.pwd}/log/last_property_media_update.txt", 'a')
+      f.write("#{DateTime.now.to_time.to_i}\n")
+      f.close
+
+      # store last position (year, month)
+      f = File.open("#{Dir.pwd}/last_yearmonth.csv", 'a')
+      f.write("#{@current_year}, #{@current_month}\n")
+      f.close
+    else
+      # add to database
+      split_records
+      split_records_count = @offset.count
+      batch_count = 1
+
+      puts "total number of records: #{@count}"
+      puts "Adding property media for #{@current_year}-#{@current_month}..."
+      @counter = 0
+      @offset.each do |key, offset|
+        print "\nBatch #{batch_count} of #{split_records_count}\n"
+        begin
+          query = "(PropMediaCreatedTimestamp="
+          query = query + "#{@current_year}-#{@current_month}-01T00:00:00-"
+          query = query + "#{@current_year}-#{@current_month}-#{@last_day_in_month}T23:59:59),"
+          query = query + "(PropertyType=|Residential)"
+          options = {:search_type => :Media, :class => :PROP_MEDIA, :query => query, :offset => offset, :limit => 10000 }
+
+          @client.search(options) do |data|
+            print "\r#{@counter}/#{@count}"
+            @property_media = PropertyMedia.new
+
+            fields.each do |field|
+              stripped_field = field.gsub(/'/, "")
+              @property_media["#{stripped_field}"] = data["#{stripped_field}"]
+            end
+            @property_media.save
+            @counter = @counter + 1
+          end
+          batch_count = batch_count + 1
+        rescue Timeout::Error
+          puts "Rescuing from timeout..."
+          redo
+        end
       end
     end
 
@@ -260,6 +340,7 @@ namespace :seed do
     if !@count 
       abort("Count failed!")
     end
+
     split_count = (@count.to_f / 10000.0).ceil
     @offset = {}
 
@@ -296,6 +377,57 @@ namespace :seed do
       return  '0' + month.to_s
     else
       return month.to_s 
+    end
+  end
+
+  def calculate_last_day_in_month
+    months_with_31_days = ["01", "03", "05", "07", "08", "10", "12"]
+    months_with_30_days = ["04", "06", "09", "11"]
+
+    if months_with_31_days.include?(@current_month)
+      @last_day_in_month = "31"
+    elsif months_with_30_days.include?(@current_month)
+      @last_day_in_month = "30"
+    elsif @current_month == "02" && @current_year == 2012
+      @last_day_in_month = "29"
+    elsif @current_month == "02"
+      @last_day_in_month = "28"
+    else
+      abort("Could not resolve number of days for current month.")
+    end
+  end
+
+  def check_every_day_for_limit
+    puts "Checking for days > 500000"
+    @days.each do |day|
+      begin
+        query = "(PropMediaCreatedTimestamp="
+        query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(day)}T00:00:00-"
+        query = query + "#{@current_year}-#{@current_month}-#{to_padded_month(day)}T23:59:59),"
+        query = query + "(PropertyType=|Residential)"
+        options =  {:search_type => :Media, :class => :PROP_MEDIA, :query => query, :count_mode => :both, :limit => 1}
+
+        @client.search(options) do |data|
+          @count = @client.rets_data[:count].to_i
+        end
+
+        # count the records for each day
+        @count_ary = []
+        if @count > 500000
+          puts "There are #{@count} records for #{day}!"
+          @count_ary.push([@count, day])
+        else
+          puts "There are #{@count} records for #{day}"
+        end
+
+        # abort with details if any days exceed 500000
+        if !@count_ary.empty?
+          abort("The following days had counts of > 500000: #{@count_ary}")
+        end
+      rescue Timeout::Error
+        puts "Retrying..."
+        retry
+      end
     end
   end
 end

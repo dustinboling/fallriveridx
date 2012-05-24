@@ -9,6 +9,7 @@ gem 'rails', '3.1.3'
 gem 'pg'
 gem 'sorcery'
 gem 'therubyracer'
+gem 'geocoder'
 
 # for internal json api
 gem 'rabl'

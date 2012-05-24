@@ -15,6 +15,7 @@ Fallriveridx::Application.routes.draw do
     get "accounts/update"
     get "accounts/show"
     get "geocode/index"
+    get "geocode/geocode"
   end
 
   get "home/index"

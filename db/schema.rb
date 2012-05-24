@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120521212105) do
+ActiveRecord::Schema.define(:version => 20120522235128) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -537,6 +537,19 @@ ActiveRecord::Schema.define(:version => 20120521212105) do
     t.decimal "Longitude"
   end
 
+  add_index "listings", ["BathsTotal"], :name => "index_listings_on_BathsTotal"
+  add_index "listings", ["BedroomsTotal"], :name => "index_listings_on_BedroomsTotal"
+  add_index "listings", ["City"], :name => "index_listings_on_City"
+  add_index "listings", ["FullStreetAddress"], :name => "index_listings_on_FullStreetAddress"
+  add_index "listings", ["Latitude"], :name => "index_listings_on_Latitude"
+  add_index "listings", ["ListAgentAgentID"], :name => "index_listings_on_ListAgentAgentID"
+  add_index "listings", ["ListPrice"], :name => "index_listings_on_ListPrice"
+  add_index "listings", ["ListingID"], :name => "index_listings_on_ListingID"
+  add_index "listings", ["Longitude"], :name => "index_listings_on_Longitude"
+  add_index "listings", ["LotSizeSQFT"], :name => "index_listings_on_LotSizeSQFT"
+  add_index "listings", ["SaleAgentAgentID"], :name => "index_listings_on_SaleAgentAgentID"
+  add_index "listings", ["ZipCode"], :name => "index_listings_on_ZipCode"
+
   create_table "property_media", :force => true do |t|
     t.text    "PropObjectKey"
     t.text    "PropMediaKey"
@@ -551,7 +564,7 @@ ActiveRecord::Schema.define(:version => 20120521212105) do
     t.text    "PropMediaCaption"
     t.text    "PropMediaDescription"
     t.text    "PropMediaURL"
-    t.date    "PropMediaCreatedTimestamp"
+    t.string  "PropMediaCreatedTimestamp"
     t.date    "PropMediaModificationTimestamp"
     t.text    "County"
     t.text    "PropMediaSystemLocale"
@@ -588,6 +601,7 @@ ActiveRecord::Schema.define(:version => 20120521212105) do
     t.string   "site_ip_address",                 :limit => nil
   end
 
+  add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"
   add_index "users", ["remember_me_token"], :name => "index_users_on_remember_me_token"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token"
 
