@@ -12,7 +12,7 @@ namespace :update do
 
     # quit if 0
     if @count == 0
-      abort("No agents to update, quitting!")
+      abort("No properties to update, quitting!")
     else
       puts "#{@count} properties to update. Proceeding..."
     end
@@ -22,23 +22,44 @@ namespace :update do
     fields = csv.shift.map { |i| i.to_s }
 
     # add them to database
-    $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
-      if Listing.where(:ListingKey => data['ListingKey']).empty?
-        @listing = Listing.new
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listing["#{stripped_field}"] = data["#{stripped_field}"]
+    begin
+      @counter = 0
+      $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
+
+        print "updating #{data['ListingKey']}\n"
+        print "\r#{@counter}/#{@count}"
+        if Listing.where(:ListingKey => data['ListingKey']).empty?
+          @listing = Listing.new
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @listing["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          @listing.save
+          @counter = @counter + 1
+        else
+          @listing = Listing.where(:ListingKey => data['ListingKey']).first
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @listing["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          @listing.save
+          @counter = @counter + 1
         end
-        @listing.save
-      else
-        @listing = Listing.where(:ListingKey => data['ListingKey']).first
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @listing["#{stripped_field}"] = data["#{stripped_field}"]
-        end
-        @listing.save
       end
+    rescue Timeout::Error
+      puts "Retrying..."
+      retry
     end
+    # write success to log
+    puts "Writing to log..."
+    log_success("properties_update_log.txt", false, false, true)
+
+    # store unix timestamp
+    f = File.open("#{Dir.pwd}/log/last_property_update.txt", 'a')
+    f.close
+
+    # all done
+    puts "Successfully added #{@count} records to the database!"
   end
 
   desc "update agents"
@@ -107,4 +128,26 @@ namespace :update do
     # convert to RETS datetime
     @last_update_rets = last_update.strftime("%Y-%m-%dT%H:%M:%S")
   end
+
+
+  def log_success(file, year, month, span)
+    if year == true && month == true
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@current_month}, #{@count}, #{@counter}\n")
+      f.close
+    elsif year == true
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
+      f.close
+    elsif span == true
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:$M:%S")}, #{@last_update_rets}, #{@count}")
+      f.close
+    else
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@count}\n")
+      f.close
+    end
+  end
+
 end

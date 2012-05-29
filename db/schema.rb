@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120522235128) do
+ActiveRecord::Schema.define(:version => 20120525215127) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -545,6 +545,7 @@ ActiveRecord::Schema.define(:version => 20120522235128) do
   add_index "listings", ["ListAgentAgentID"], :name => "index_listings_on_ListAgentAgentID"
   add_index "listings", ["ListPrice"], :name => "index_listings_on_ListPrice"
   add_index "listings", ["ListingID"], :name => "index_listings_on_ListingID"
+  add_index "listings", ["ListingKey"], :name => "index_listings_on_ListingKey"
   add_index "listings", ["Longitude"], :name => "index_listings_on_Longitude"
   add_index "listings", ["LotSizeSQFT"], :name => "index_listings_on_LotSizeSQFT"
   add_index "listings", ["SaleAgentAgentID"], :name => "index_listings_on_SaleAgentAgentID"

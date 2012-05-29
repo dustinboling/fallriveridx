@@ -25,7 +25,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * ListPrice (Must provide greater than or equal to. ex: ListPrice=>450000 will return houses listed at $450,000 or more)
 * BedroomsTotal (returns greater than or equal to the number given)
 * BathsTotal (returns greater than or equal to the number given)
-* BuildingSizeSQFT (returns greater than or equal to the number given)
+* BuildingSize (returns greater than or equal to the number given)
 
 ### Show (Single Property Details)
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.
@@ -56,6 +56,11 @@ In addition to the required parameters you can also pass in the following:
 
 ### Search by City
 
+### Get Geocodes
+There is also an action for getting geocodes, here's the endpoint:
+``` ruby
+http://fallriveridx.heroku.com/api/geocode/index.json?[yourZip/Address]
+```
 
 ## ACCOUNTS API
 The accounts api takes requests here:
