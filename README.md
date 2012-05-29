@@ -52,7 +52,7 @@ In addition to the required parameters you can also pass in the following:
 * ListPrice
 * BedroomsTotal
 * BathsTotal
-* BuildingSizeSQFT
+* BuildingSize
 
 ### Search by City
 
