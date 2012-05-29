@@ -4,7 +4,7 @@ class Api::GeocodeController < ApplicationController
 
   before_filter :validate_params
 
-  ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
+  ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
 
   def index
     ### boundary method
