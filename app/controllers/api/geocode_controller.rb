@@ -56,7 +56,8 @@ class Api::GeocodeController < ApplicationController
       @markers["marker#{i}"]["Address"] = l.FullStreetAddress
       @markers["marker#{i}"]["Bedrooms"] = l.BedroomsTotal
       @markers["marker#{i}"]["Baths"] = l.BathsTotal
-      @markers["marker#{i}"]["SQFT"] = l.BuildingSize
+      @markers["marker#{i}"]["BuildingSize"] = l.BuildingSize
+      @markers["marker#{i}"]["LotSizeSQFT"] = l.LotSizeSQFT
       i = i + 1
     end
 
