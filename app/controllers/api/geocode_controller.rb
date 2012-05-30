@@ -54,6 +54,8 @@ class Api::GeocodeController < ApplicationController
       @markers["marker#{i}"]["LatLng"] = [l.Latitude, l.Longitude]
       @markers["marker#{i}"]["ListPrice"] = l.ListPrice.to_i
       @markers["marker#{i}"]["Address"] = l.FullStreetAddress
+      @markers["marker#{i}"]["City"] = l.City
+      @markers["marker#{i}"]["ZipCode"] = l.ZipCode
       @markers["marker#{i}"]["Bedrooms"] = l.BedroomsTotal
       @markers["marker#{i}"]["Baths"] = l.BathsTotal
       @markers["marker#{i}"]["BuildingSize"] = l.BuildingSize
