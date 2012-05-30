@@ -58,6 +58,8 @@ class Api::GeocodeController < ApplicationController
       @markers["marker#{i}"]["Baths"] = l.BathsTotal
       @markers["marker#{i}"]["BuildingSize"] = l.BuildingSize
       @markers["marker#{i}"]["LotSizeSQFT"] = l.LotSizeSQFT
+      @markers["marker#{i}"]["ListingStatus"] = l.ListingStatus
+      @markers["marker#{i}"]["ListingDate"] = l.ListingDate
       i = i + 1
     end
 
