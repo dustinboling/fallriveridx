@@ -3,5 +3,4 @@
     "success": false,
     "message": "<%= flash[:message] %>"
   }
-}
 });
