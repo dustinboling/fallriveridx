@@ -1,6 +1,7 @@
-{ "response": 
+<%= params[:callback] %>({ "response": 
   {
     "success": false,
     "message": "<%= flash[:message] %>"
   }
 }
+});
