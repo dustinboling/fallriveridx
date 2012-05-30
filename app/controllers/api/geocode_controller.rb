@@ -4,7 +4,7 @@ class Api::GeocodeController < ApplicationController
 
   before_filter :validate_params
 
-  ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
+  ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "LotSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
 
   def index
     ### boundary method
@@ -26,7 +26,7 @@ class Api::GeocodeController < ApplicationController
         else
           respond_error("Could not parse ListPrice")
         end
-      elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key)
+      elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key) || /BuildingSize/.match(key)
         @query = @query + "\"#{key}\" >= '#{value}' AND "
       elsif /Limit/.match(key)
         @query_limit = " LIMIT #{value}"

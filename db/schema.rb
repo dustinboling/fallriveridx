@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120525215127) do
+ActiveRecord::Schema.define(:version => 20120529175651) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -162,7 +162,7 @@ ActiveRecord::Schema.define(:version => 20120525215127) do
   end
 
   create_table "listings", :force => true do |t|
-    t.text    "BuildingSize"
+    t.text    "building_size_string"
     t.date    "CancelledDate"
     t.text    "ClosePrice"
     t.date    "ClosingDate"
@@ -535,6 +535,7 @@ ActiveRecord::Schema.define(:version => 20120525215127) do
     t.decimal "ListPrice",                          :precision => 14, :scale => 2
     t.decimal "Latitude"
     t.decimal "Longitude"
+    t.decimal "BuildingSize"
   end
 
   add_index "listings", ["BathsTotal"], :name => "index_listings_on_BathsTotal"

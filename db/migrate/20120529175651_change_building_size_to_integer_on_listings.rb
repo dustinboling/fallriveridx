@@ -5,7 +5,7 @@ class ChangeBuildingSizeToIntegerOnListings < ActiveRecord::Migration
       update listings set new_building_size = CAST("BuildingSize" as numeric);
       alter table listings rename "BuildingSize" to building_size_string;
       alter table listings rename new_building_size to "BuildingSize";
-      alter table listings drop new_building_size;
+      alter table listings drop building_size_string;
     SQL
   end
 

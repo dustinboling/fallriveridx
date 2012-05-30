@@ -35,13 +35,15 @@ http://fallriveridx.heroku.com/api/properties/show.json?ListingID=P12345678&Toke
 ```
 
 ## GEOCODE API
-The geocode api takes requests here at the index action:
+This is the geocode endpoint, we use it to talk to the google maps api.
 
-```ruby
+### Index (Boundary search)
+This action always recieves the following parameters (boundaries + ALL additional query parameters). If this is ever chaged (add more query params, etc.) then we need to create new multicolumn indices for the full set. This is the endpoint:
+
+``` ruby
 http://fallriveridx.heroku.com/api/geocode/index.json?[yourQuery][yourToken]
 ```
 
-### Boundary Search
 It requires the following parameters, using only these will return at maximum 40 homes from within the boundary area. 
 * ne_long 
 * ne_lat 
