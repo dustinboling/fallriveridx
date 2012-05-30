@@ -55,6 +55,7 @@ In addition to the required parameters you can also pass in the following:
 * BedroomsTotal
 * BathsTotal
 * BuildingSize
+* LotSizeSQFT
 
 ### Search by City
 
