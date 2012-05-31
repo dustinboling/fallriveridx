@@ -26,7 +26,6 @@ namespace :update do
       @counter = 0
       $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
 
-        print "updating #{data['ListingKey']}\n"
         print "\r#{@counter}/#{@count}"
         if Listing.where(:ListingKey => data['ListingKey']).empty?
           @listing = Listing.new
@@ -56,6 +55,7 @@ namespace :update do
 
     # store unix timestamp
     f = File.open("#{Dir.pwd}/log/last_property_update.txt", 'a')
+    f.write("#{DateTime.now.to_time.to_i}\n")
     f.close
 
     # all done
@@ -107,8 +107,74 @@ namespace :update do
   desc "update property media"
   task :media => :environment do
     client_login
-    get_last_update_time("last_prop_media_update.txt")
+    get_last_update_time("last_property_media_update.txt")
 
+    # count since last update
+    options = {
+      :search_type => :Media,
+      :class => :PROP_MEDIA,
+      :query => "(PropMediaModificationTimestamp=#{@last_update_rets}-NOW)", 
+      :count_mode => :both, :limit => 1
+    }
+    $client.search(options) do |data|
+        @count = $client.rets_data[:count].to_i
+    end
+
+    if @count == 0
+      abort("No properties to update, quitting!")
+    else
+      puts "#{@count} media objects to update. Proceeding.."
+    end
+
+    # populate fields
+    csv = CSV.read("#{Dir.pwd}/property_fields.txt")
+    fields = csv.shift.map { |i| i.to_s }
+
+    # add them to database
+    begin
+      @counter = 0
+      options = {
+        :search_type => :Media,
+        :class => :PROP_MEDIA,
+        :query => "(PropMediaModificationTimestamp=#{@last_update_rets}-NOW)",
+        :limit => 500000
+      }
+      $client.search(options) do |data|
+        print "\r#{@counter}/#{@count}"
+        if PropertyMedia.where(:PropMediaKey => data['PropMediaKey']).empty?
+          @prop_media = PropertyMedia.new
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          @prop_media.save
+          @counter = @counter + 1
+        else
+          @prop_media = PropertyMedia.new
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          @prop_media.save
+          @counter = @counter + 1
+        end
+      end
+    rescue Timeout::Error
+      puts "Retrying..."
+      retry
+    end
+
+    # write success to log
+    puts "Writing to log..."
+    log_success("property_media_update_log.txt", false, false, true)
+
+    # store unix timestamp
+    f = File.open("#{Dir.pwd}/log/last_property_media_update.txt", 'a')
+    f.write("#{DateTime.now.to_time.to_i}\n")
+    f.close
+
+    # all done
+    puts "Successfully added #{@count} records to the database."
   end
 
   def client_login

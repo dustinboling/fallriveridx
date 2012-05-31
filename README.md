@@ -60,7 +60,8 @@ In addition to the required parameters you can also pass in the following:
 ### Search by City
 
 ### Get Geocodes
-There is also an action for getting geocodes, here's the endpoint:
+There is also an action for getting geocodes. When you make a request, it sends a request to Google's geocode api and returns the result. As such, this is an interim solution until clients can resolve these by themselves. Here's the endpoint:
+
 ``` ruby
 http://fallriveridx.heroku.com/api/geocode/index.json?[yourZip/Address]
 ```

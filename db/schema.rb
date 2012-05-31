@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120529175651) do
+ActiveRecord::Schema.define(:version => 20120531183546) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -162,7 +162,6 @@ ActiveRecord::Schema.define(:version => 20120529175651) do
   end
 
   create_table "listings", :force => true do |t|
-    t.text    "building_size_string"
     t.date    "CancelledDate"
     t.text    "ClosePrice"
     t.date    "ClosingDate"
@@ -320,7 +319,6 @@ ActiveRecord::Schema.define(:version => 20120529175651) do
     t.text    "LotDescription"
     t.text    "LotSizeAcres"
     t.text    "LotSizeDimensionDescription"
-    t.text    "LotSizeSQFT"
     t.text    "PatioFeatures"
     t.text    "PropertyCondition"
     t.text    "YearBuilt"
@@ -536,6 +534,7 @@ ActiveRecord::Schema.define(:version => 20120529175651) do
     t.decimal "Latitude"
     t.decimal "Longitude"
     t.decimal "BuildingSize"
+    t.decimal "LotSizeSQFT"
   end
 
   add_index "listings", ["BathsTotal"], :name => "index_listings_on_BathsTotal"
@@ -544,11 +543,11 @@ ActiveRecord::Schema.define(:version => 20120529175651) do
   add_index "listings", ["FullStreetAddress"], :name => "index_listings_on_FullStreetAddress"
   add_index "listings", ["Latitude"], :name => "index_listings_on_Latitude"
   add_index "listings", ["ListAgentAgentID"], :name => "index_listings_on_ListAgentAgentID"
+  add_index "listings", ["ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "LotSizeSQFT", "Latitude", "Longitude"], :name => "idx_query"
   add_index "listings", ["ListPrice"], :name => "index_listings_on_ListPrice"
   add_index "listings", ["ListingID"], :name => "index_listings_on_ListingID"
   add_index "listings", ["ListingKey"], :name => "index_listings_on_ListingKey"
   add_index "listings", ["Longitude"], :name => "index_listings_on_Longitude"
-  add_index "listings", ["LotSizeSQFT"], :name => "index_listings_on_LotSizeSQFT"
   add_index "listings", ["SaleAgentAgentID"], :name => "index_listings_on_SaleAgentAgentID"
   add_index "listings", ["ZipCode"], :name => "index_listings_on_ZipCode"
 
@@ -577,6 +576,8 @@ ActiveRecord::Schema.define(:version => 20120529175651) do
     t.text    "PropMediaPixelLength"
     t.text    "PropMediaPixelWidth"
   end
+
+  add_index "property_media", ["PropMediaKey"], :name => "index_property_media_on_PropMediaKey"
 
   create_table "subscribers", :force => true do |t|
     t.boolean  "active"
