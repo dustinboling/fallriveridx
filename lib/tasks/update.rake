@@ -11,7 +11,7 @@ namespace :update do
     end
 
     # quit if 0
-    if @count == 0
+    if @count == nil
       abort("No properties to update, quitting!")
     else
       puts "#{@count} properties to update. Proceeding..."
@@ -24,6 +24,9 @@ namespace :update do
     # add them to database
     begin
       @counter = 0
+      @new_count = 0
+      @update_count = 0
+      @error_count = 0
       $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
 
         print "\r#{@counter}/#{@count}"
@@ -33,25 +36,38 @@ namespace :update do
             stripped_field = field.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
-          @listing.save
-          @counter = @counter + 1
+          if @listing.save
+            @counter = @counter + 1
+            @new_count = @new_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("properties", data['ListingKey'])
+          end
         else
           @listing = Listing.where(:ListingKey => data['ListingKey']).first
           fields.each do |field|
             stripped_field = field.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
-          @listing.save
-          @counter = @counter + 1
+          if @listing.save
+            @counter = @counter + 1
+            @update_count = @update_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("properties", data['ListingKey'])
+          end
         end
       end
     rescue Timeout::Error
       puts "Retrying..."
       retry
     end
+
     # write success to log
     puts "Writing to log..."
-    log_success("properties_update_log.txt", false, false, true)
+    log_success("properties_update_log.txt", false, false, false, true)
 
     # store unix timestamp
     f = File.open("#{Dir.pwd}/log/last_property_update.txt", 'a')
@@ -59,21 +75,24 @@ namespace :update do
     f.close
 
     # all done
-    puts "Successfully added #{@count} records to the database!"
+    puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
   end
 
   desc "update agents"
   task :agents => :environment do
+    puts "attaching client..."
     client_login
+    puts "getting last update time..."
     get_last_update_time("last_agent_update.txt")
 
     # count new agents since last_update
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
+    puts "counting agents modified since last update..."
+    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 1) do |data|
       @count = $client.rets_data[:count].to_i
     end
 
     # quit if 0
-    if @count == 0
+    if @count == nil
       abort("No agents to update, quitting!")
     else
       puts "#{@count} agents to update. Proceeding..."
@@ -84,24 +103,60 @@ namespace :update do
     fields = csv.shift.map { |i| i.to_s }
 
     # build new agent query since last_update
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :limit => 500000) do |data|
+    begin
+      @counter = 0
+      @new_count = 0
+      @update_count = 0
+      @error_count = 0
+      $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :limit => 500000) do |data|
 
-      if Agent.where(:AgentKey => data['AgentKey']).empty?
-        @agent = Agent.new
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @agent["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+        print "\r#{@counter}/#{@count}"
+        if Agent.where(:AgentKey => data['AgentKey']).empty?
+          @agent = Agent.new
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @agent["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          if @agent.save
+            @counter = @counter + 1
+            @new_count = @new_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("agents", data['AgentKey'])
+          end
+        else
+          @agent = Agent.where(:AgentKey => data['AgentKey']).first
+          fields.each do |field|
+            stripped_field = field.gsub(/'/, "")
+            @agent["#{stripped_field}"] = data["#{stripped_field}"]
+          end
+          if @agent.save
+            @counter = @counter + 1
+            @update_count = @update_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("agents", data['AgentKey'])
+          end
         end
-        @agent.save
-      else
-        @agent = Agent.where(:AgentKey => data['AgentKey']).first
-        fields.each do |field|
-          stripped_field = field.gsub(/'/, "")
-          @agent["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
-        end
-        @agent.save
-      end
-    end 
+      end 
+    rescue Timeout::Error
+      puts "Retrying..."
+      retry
+    end
+
+    # write success to log
+    puts "Writing to log..."
+    log_success("agents_update_log.txt", false, false, false, true)
+
+    # store unix timestamp
+    f = File.open("#{Dir.pwd}/log/last_agent_update.txt", 'a')
+    f.write("#{DateTime.now.to_time.to_i}\n")
+    f.close
+
+    # all done
+    puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
   end
 
   desc "update property media"
@@ -117,10 +172,10 @@ namespace :update do
       :count_mode => :both, :limit => 1
     }
     $client.search(options) do |data|
-        @count = $client.rets_data[:count].to_i
+      @count = $client.rets_data[:count].to_i
     end
 
-    if @count == 0
+    if @count == nil
       abort("No properties to update, quitting!")
     else
       puts "#{@count} media objects to update. Proceeding.."
@@ -133,6 +188,9 @@ namespace :update do
     # add them to database
     begin
       @counter = 0
+      @new_count = 0
+      @update_count = 0
+      @error_count = 0
       options = {
         :search_type => :Media,
         :class => :PROP_MEDIA,
@@ -147,16 +205,28 @@ namespace :update do
             stripped_field = field.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end
-          @prop_media.save
-          @counter = @counter + 1
+          if @prop_media.save
+            @counter = @counter + 1
+            @new_count = @new_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("prop_media", data['PropMediaKey'])
+          end
         else
           @prop_media = PropertyMedia.new
           fields.each do |field|
             stripped_field = field.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end
-          @prop_media.save
-          @counter = @counter + 1
+          if @prop_media.save
+            @counter = @counter + 1
+            @update_count = @update_count + 1
+          else
+            @counter = @counter + 1
+            @error_count = @error_count + 1
+            log_error("prop_media", data['PropMediaKey'])
+          end
         end
       end
     rescue Timeout::Error
@@ -166,7 +236,7 @@ namespace :update do
 
     # write success to log
     puts "Writing to log..."
-    log_success("property_media_update_log.txt", false, false, true)
+    log_success("property_media_update_log.txt", false, false, false, true)
 
     # store unix timestamp
     f = File.open("#{Dir.pwd}/log/last_property_media_update.txt", 'a')
@@ -174,7 +244,7 @@ namespace :update do
     f.close
 
     # all done
-    puts "Successfully added #{@count} records to the database."
+    puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
   end
 
   def client_login
@@ -196,24 +266,34 @@ namespace :update do
   end
 
 
-  def log_success(file, year, month, span)
+  def log_success(file, year, month, span, update)
     if year == true && month == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@current_month}, #{@count}, #{@counter}\n")
+      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@current_year}, #{@current_month}, #{@count}, #{@counter}\n")
       f.close
     elsif year == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
+      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
       f.close
     elsif span == true
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:$M:%S")}, #{@last_update_rets}, #{@count}")
+      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@last_update_rets}, #{@count}\n")
+      f.close
+    elsif update == true
+      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
+      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@last_update_rets}, #{@new_count}, #{@update_count}\n")
       f.close
     else
       f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y - %I:%M:%S")}, #{@count}\n")
+      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@count}\n")
       f.close
     end
+  end
+
+  def log_error(task, key)
+    f = File.open("#{Dir.pwd}/log/update_errors.csv", 'a')
+    f.write("#{Time.now.strftime("$m-%d-%Y@%I:%M:%S")}, #{task}, #{key}")
+    f.close
   end
 
 end

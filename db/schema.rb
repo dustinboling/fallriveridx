@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531183546) do
+ActiveRecord::Schema.define(:version => 20120531210237) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -87,6 +87,8 @@ ActiveRecord::Schema.define(:version => 20120531183546) do
     t.text     "OfficeOfficePhoneExt"
   end
 
+  add_index "agents", ["AgentKey"], :name => "index_agents_on_AgentKey"
+
   create_table "brokers", :force => true do |t|
     t.text     "AgentDesignations"
     t.text     "AgentDisplayName"
@@ -159,6 +161,14 @@ ActiveRecord::Schema.define(:version => 20120531183546) do
     t.text     "OfficeStatus"
     t.text     "OfficeOfficePhone"
     t.text     "OfficeOfficePhoneExt"
+  end
+
+  create_table "errors", :force => true do |t|
+    t.datetime "time"
+    t.string   "task"
+    t.string   "key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "listings", :force => true do |t|
