@@ -10,6 +10,7 @@ gem 'pg'
 gem 'sorcery'
 gem 'therubyracer'
 gem 'geocoder'
+gem 'heroku'
 
 # for internal json api
 gem 'rabl'

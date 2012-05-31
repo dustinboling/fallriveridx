@@ -17,10 +17,6 @@ namespace :update do
       puts "#{@count} properties to update. Proceeding..."
     end
 
-    # populate fields
-    csv = CSV.read("#{Dir.pwd}/property_fields.txt")
-    fields = csv.shift.map { |i| i.to_s }
-
     # add them to database
     begin
       @counter = 0
@@ -28,12 +24,11 @@ namespace :update do
       @update_count = 0
       @error_count = 0
       $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
-
         print "\r#{@counter}/#{@count}"
         if Listing.where(:ListingKey => data['ListingKey']).empty?
           @listing = Listing.new
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          Listing.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @listing.save
@@ -46,8 +41,8 @@ namespace :update do
           end
         else
           @listing = Listing.where(:ListingKey => data['ListingKey']).first
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          Listing.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @listing.save
@@ -93,10 +88,6 @@ namespace :update do
       puts "#{@count} agents to update. Proceeding..."
     end
 
-    # populate fields
-    csv = CSV.read("#{Dir.pwd}/agent_fields.txt")
-    fields = csv.shift.map { |i| i.to_s }
-
     # build new agent query since last_update
     begin
       @counter = 0
@@ -108,8 +99,8 @@ namespace :update do
         print "\r#{@counter}/#{@count}"
         if Agent.where(:AgentKey => data['AgentKey']).empty?
           @agent = Agent.new
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          Agent.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @agent["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @agent.save
@@ -122,8 +113,8 @@ namespace :update do
           end
         else
           @agent = Agent.where(:AgentKey => data['AgentKey']).first
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          Agent.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @agent["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @agent.save
@@ -171,10 +162,6 @@ namespace :update do
       puts "#{@count} media objects to update. Proceeding.."
     end
 
-    # populate fields
-    csv = CSV.read("#{Dir.pwd}/property_fields.txt")
-    fields = csv.shift.map { |i| i.to_s }
-
     # add them to database
     begin
       @counter = 0
@@ -191,8 +178,8 @@ namespace :update do
         print "\r#{@counter}/#{@count}"
         if PropertyMedia.where(:PropMediaKey => data['PropMediaKey']).empty?
           @prop_media = PropertyMedia.new
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          PropertyMedia.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @prop_media.save
@@ -205,8 +192,8 @@ namespace :update do
           end
         else
           @prop_media = PropertyMedia.new
-          fields.each do |field|
-            stripped_field = field.gsub(/'/, "")
+          PropertyMedia.columns.each do |field|
+            stripped_field = field.name.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end
           if @prop_media.save
