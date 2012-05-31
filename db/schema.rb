@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531210237) do
+ActiveRecord::Schema.define(:version => 20120531214448) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -595,6 +595,16 @@ ActiveRecord::Schema.define(:version => 20120531210237) do
     t.string   "website_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "updates", :force => true do |t|
+    t.string   "unixtime"
+    t.string   "task"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "new_count"
+    t.integer  "update_count"
+    t.integer  "error_count"
   end
 
   create_table "users", :force => true do |t|

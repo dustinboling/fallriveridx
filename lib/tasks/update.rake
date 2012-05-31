@@ -3,7 +3,7 @@ namespace :update do
   desc "update properties"
   task :properties => :environment do
     client_login
-    get_last_update_time("last_property_update.txt")
+    get_last_update_time("properties")
 
     # count since last update
     $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 1) do |data|
@@ -65,14 +65,9 @@ namespace :update do
       retry
     end
 
-    # write success to log
-    puts "Writing to log..."
-    log_success("properties_update_log.txt", false, false, false, true)
-
     # store unix timestamp
-    f = File.open("#{Dir.pwd}/log/last_property_update.txt", 'a')
-    f.write("#{DateTime.now.to_time.to_i}\n")
-    f.close
+    puts "\nstoring unix timestamp..."
+    set_last_update_time("properties")
 
     # all done
     puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
@@ -83,7 +78,7 @@ namespace :update do
     puts "attaching client..."
     client_login
     puts "getting last update time..."
-    get_last_update_time("last_agent_update.txt")
+    get_last_update_time("agents")
 
     # count new agents since last_update
     puts "counting agents modified since last update..."
@@ -146,14 +141,9 @@ namespace :update do
       retry
     end
 
-    # write success to log
-    puts "Writing to log..."
-    log_success("agents_update_log.txt", false, false, false, true)
-
     # store unix timestamp
-    f = File.open("#{Dir.pwd}/log/last_agent_update.txt", 'a')
-    f.write("#{DateTime.now.to_time.to_i}\n")
-    f.close
+    puts "\nstoring unix timestamp..."
+    set_last_update_time("agents")
 
     # all done
     puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
@@ -162,7 +152,7 @@ namespace :update do
   desc "update property media"
   task :media => :environment do
     client_login
-    get_last_update_time("last_property_media_update.txt")
+    get_last_update_time("media")
 
     # count since last update
     options = {
@@ -234,14 +224,9 @@ namespace :update do
       retry
     end
 
-    # write success to log
-    puts "Writing to log..."
-    log_success("property_media_update_log.txt", false, false, false, true)
-
     # store unix timestamp
-    f = File.open("#{Dir.pwd}/log/last_property_media_update.txt", 'a')
-    f.write("#{DateTime.now.to_time.to_i}\n")
-    f.close
+    puts "\nstoring unix timestamp..."
+    set_last_update_time("media")
 
     # all done
     puts "Updated: #{@update_count}\nNew: #{@new_count}\nErrors: #{@error_count}"
@@ -256,44 +241,34 @@ namespace :update do
     )
   end
 
-  def get_last_update_time(filename)
-    # get unix timestamp from file
-    last_timestamp = `tail -n 1 #{Dir.pwd}/log/#{filename}`
+  def get_last_update_time(task)
+    # get unix timestamp from database
+    update = Update.where(:task => task).last
+    last_timestamp = update.unixtime
     last_update = DateTime.strptime(last_timestamp.to_s, '%s')
 
     # convert to RETS datetime
     @last_update_rets = last_update.strftime("%Y-%m-%dT%H:%M:%S")
   end
 
-
-  def log_success(file, year, month, span, update)
-    if year == true && month == true
-      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@current_year}, #{@current_month}, #{@count}, #{@counter}\n")
-      f.close
-    elsif year == true
-      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@current_year}, #{@count}, #{@counter}\n")
-      f.close
-    elsif span == true
-      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@last_update_rets}, #{@count}\n")
-      f.close
-    elsif update == true
-      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@last_update_rets}, #{@new_count}, #{@update_count}\n")
-      f.close
-    else
-      f = File.open("#{Dir.pwd}/log/#{file}", 'a')
-      f.write("#{Time.now.strftime("%m-%d-%Y@%I:%M:%S")}, #{@count}\n")
-      f.close
-    end
+  def set_last_update_time(task)
+    u = Update.new
+    u.unixtime = DateTime.now.to_time.to_i
+    u.task = task
+    u.new_count = @new_count
+    u.update_count = @update_count
+    u.error_count = @error_count
+    
+    u.save
   end
 
   def log_error(task, key)
-    f = File.open("#{Dir.pwd}/log/update_errors.csv", 'a')
-    f.write("#{Time.now.strftime("$m-%d-%Y@%I:%M:%S")}, #{task}, #{key}")
-    f.close
+    e = Error.new
+    e.time = Time.now
+    e.task = task
+    e.key = key
+
+    e.save
   end
 
 end
