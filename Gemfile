@@ -20,7 +20,7 @@ gem 'json'
 gem 'ruby-rets', :git => 'https://github.com/Placester/ruby-rets.git'
 
 # Batsd stuff
-gem 'statsd-ruby', github: 'jeremy/statsd-ruby', require: 'statsd'
+gem 'statsd-ruby', :git => 'https://github.com/jeremy/statsd-ruby.git', require: 'statsd'
 
 # had to add this due to broken dependencies chain, most likely one of the sass gems
 gem 'bcrypt-ruby'
