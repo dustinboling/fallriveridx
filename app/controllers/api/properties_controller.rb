@@ -1,6 +1,6 @@
 class Api::PropertiesController < ApplicationController
   include Api::Shared::ErrorsHelper
-  include Api::Shared::Logger
+  include Api::Shared::LoggerHelper
 
   require 'socket'
 
