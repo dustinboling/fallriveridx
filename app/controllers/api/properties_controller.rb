@@ -52,6 +52,7 @@ class Api::PropertiesController < ApplicationController
       else
         # push listings to view
         @listings = Listing.find_by_sql(query)
+
         # log to batsd
         batsd_increment
       end

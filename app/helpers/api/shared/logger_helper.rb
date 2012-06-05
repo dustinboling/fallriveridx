@@ -1,10 +1,15 @@
 module Api::Shared::LoggerHelper
   def batsd_increment
-        # compose counter name
-        ctr_site = request.env["HTTP_REFERER"]
-        ctr_site = @user.site_url
-        ctr_details = params[:controller] + '.' + params[:action]
-        counter = ctr_site + '.get' + ctr_details
+    # compose counter name
+    ctr_token = @user.authentication_token
+    ctr_req = params[:controller] + '.' + params[:action]
+    ctr_params = ""
+    @user_params.each do |key, value|
+      ctr_params = ctr_params +  key + ":" + value
+    end
+    counter = ctr_token + '.get' + ctr_req +  "." + ctr_params
+
+    # log stat
     $statsd.increment(counter)
   end
 
