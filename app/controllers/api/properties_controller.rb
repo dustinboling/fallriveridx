@@ -52,15 +52,8 @@ class Api::PropertiesController < ApplicationController
       else
         # push listings to view
         @listings = Listing.find_by_sql(query)
-
-        # compose counter name
-        ctr_site = request.env["HTTP_REFERER"]
-        ctr_site = @user.site_url
-        ctr_details = params[:controller] + '.' + params[:action]
-        counter = ctr_site + '.get' + ctr_details
-
         # log to batsd
-        batsd_increment(counter)
+        batsd_increment
       end
     end
   end
