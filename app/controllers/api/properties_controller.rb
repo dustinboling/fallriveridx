@@ -55,7 +55,7 @@ class Api::PropertiesController < ApplicationController
 
         # compose counter name
         ctr_site = request.env["HTTP_REFERER"]
-        ctr_site = user.site_url
+        ctr_site = @user.site_url
         ctr_details = params[:controller] + '.' + params[:action]
         counter = ctr_site + '.get' + ctr_details
 
