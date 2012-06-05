@@ -6,7 +6,14 @@ namespace :update do
     get_last_update_time("properties")
 
     # count since last update
-    $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 1) do |data|
+    options = { 
+      :search_type => :Property, 
+      :class => :RES, 
+      :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", 
+      :count_mode => :both, 
+      :limit => 1
+    }
+    $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
     end
 
@@ -23,11 +30,18 @@ namespace :update do
       @new_count = 0
       @update_count = 0
       @error_count = 0
-      $client.search(:search_type => :Property, :class => :RES, :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 500000) do |data|
+      options = {
+        :search_type => :Property, 
+        :class => :RES, 
+        :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", 
+        :limit => 500000
+      }
+      $client.search(options) do |data|
         print "\r#{@counter}/#{@count}"
         if Listing.where(:ListingKey => data['ListingKey']).empty?
           @listing = Listing.new
-          Listing.columns.each do |field|
+          columns = Listing.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
@@ -41,7 +55,8 @@ namespace :update do
           end
         else
           @listing = Listing.where(:ListingKey => data['ListingKey']).first
-          Listing.columns.each do |field|
+          columns = Listing.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @listing["#{stripped_field}"] = data["#{stripped_field}"]
           end
@@ -77,7 +92,14 @@ namespace :update do
 
     # count new agents since last_update
     puts "counting agents modified since last update..."
-    $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :count_mode => :both, :limit => 1) do |data|
+    options = {
+      :search_type => :Agent, 
+      :class => :Agent, 
+      :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", 
+      :count_mode => :both, 
+      :limit => 1
+    }
+    $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
     end
 
@@ -94,12 +116,18 @@ namespace :update do
       @new_count = 0
       @update_count = 0
       @error_count = 0
-      $client.search(:search_type => :Agent, :class => :Agent, :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", :limit => 500000) do |data|
-
+      options = {
+        :search_type => :Agent, 
+        :class => :Agent, 
+        :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", 
+        :limit => 500000
+      }
+      $client.search(options) do |data|
         print "\r#{@counter}/#{@count}"
         if Agent.where(:AgentKey => data['AgentKey']).empty?
           @agent = Agent.new
-          Agent.columns.each do |field|
+          columns = Agent.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @agent["#{stripped_field}"] = data["#{stripped_field}"]
           end
@@ -113,7 +141,8 @@ namespace :update do
           end
         else
           @agent = Agent.where(:AgentKey => data['AgentKey']).first
-          Agent.columns.each do |field|
+          columns = Agent.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @agent["#{stripped_field}"] = data["#{stripped_field}"]
           end
@@ -150,7 +179,8 @@ namespace :update do
       :search_type => :Media,
       :class => :PROP_MEDIA,
       :query => "(PropMediaModificationTimestamp=#{@last_update_rets}-NOW)", 
-      :count_mode => :both, :limit => 1
+      :count_mode => :both, 
+      :limit => 1
     }
     $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
@@ -176,9 +206,10 @@ namespace :update do
       }
       $client.search(options) do |data|
         print "\r#{@counter}/#{@count}"
-        if PropertyMedia.where(:PropMediaKey => data['PropMediaKey']).empty?
-          @prop_media = PropertyMedia.new
-          PropertyMedia.columns.each do |field|
+        if PropertyMedium.where(:PropMediaKey => data['PropMediaKey']).empty?
+          @prop_media = PropertyMedium.new
+          columns = PropertyMedium.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end
@@ -191,8 +222,9 @@ namespace :update do
             log_error("prop_media", data['PropMediaKey'])
           end
         else
-          @prop_media = PropertyMedia.new
-          PropertyMedia.columns.each do |field|
+          @prop_media = PropertyMedium.new
+          columns = PropertyMedium.columns
+          columns.each do |field|
             stripped_field = field.name.gsub(/'/, "")
             @prop_media["#{stripped_field}"] = data["#{stripped_field}"]
           end

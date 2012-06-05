@@ -1,8 +1,11 @@
 class Api::PropertiesController < ApplicationController
   include Api::Shared::ErrorsHelper
+  include Api::Shared::Logger
+
+  require 'socket'
 
   before_filter :validate_params
-  before_filter :authenticate_referrer
+  # before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["ListingID", "FullStreetAddress", "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", "action", "format", "Token"]
 
@@ -47,7 +50,17 @@ class Api::PropertiesController < ApplicationController
       if query == "SELECT * FROM listings WHERE "
         respond_error("No parameters supplied")
       else
+        # push listings to view
         @listings = Listing.find_by_sql(query)
+
+        # compose counter name
+        ctr_site = request.env["HTTP_REFERER"]
+        ctr_site = user.site_url
+        ctr_details = params[:controller] + '.' + params[:action]
+        counter = ctr_site + '.get' + ctr_details
+
+        # log to batsd
+        batsd_increment(counter)
       end
     end
   end
@@ -99,5 +112,45 @@ class Api::PropertiesController < ApplicationController
     else
       respond_error("Could not find an account with this API key. Please verify and update your API key.")
     end
+  end
+
+  def resolve_site_url
+
+  end
+
+  ###
+  # logging
+  def statsd_log_success(type)
+    site_url = request.env["HTTP_REFERER"]
+    controller = params[:controller]
+    action = params[:action]
+    msg = BUILDME
+
+    u = UDPSocket.new
+    u.bind("127.0.0.1", 8125)
+    u.send(msg, 0, "107.22.45.199", 8125)
+  end
+
+  # TODO: make this a background task due to use of resolve_site_url
+  def statsd_log_fail(type, msg)
+    site_url = request.env["HTTP_REFERER"]
+    controller = params[:controller]
+    action = params[:action]
+    msg = BUILDME + msg
+
+    if site_url == nil
+      resolve_site_url
+      send_udp_packet(msg)
+    end
+
+    u = UDPSocket.new
+    u.bind("127.0.0.1", 8125)
+    u.send(msg)
+  end
+
+  def send_udp_packet(msg)
+    u = UDPSocket.new
+    u.bind("127.0.0.1", 8125)
+    u.send(msg)
   end
 end

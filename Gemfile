@@ -19,6 +19,9 @@ gem 'json'
 # for outside api's
 gem 'ruby-rets', :git => 'https://github.com/Placester/ruby-rets.git'
 
+# Batsd stuff
+gem 'statsd-ruby', github: 'jeremy/statsd-ruby', require: 'statsd'
+
 # had to add this due to broken dependencies chain, most likely one of the sass gems
 gem 'bcrypt-ruby'
 

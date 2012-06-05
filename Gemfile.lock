@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/jeremy/statsd-ruby.git
+  revision: ff30ee57a84af41462f306b30358583af96fff6c
+  specs:
+    statsd-ruby (0.4.0)
+
+GIT
   remote: https://github.com/Placester/ruby-rets.git
   revision: cd957e9785e9ff742184ce5fbec06f15eaa62fba
   specs:
@@ -202,6 +208,7 @@ DEPENDENCIES
   ruby-rets!
   sass-rails
   sorcery
+  statsd-ruby!
   therubyracer
   turn (= 0.8.2)
   uglifier (>= 1.0.3)
