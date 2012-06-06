@@ -1,5 +1,6 @@
 class Api::GeocodeController < ApplicationController
   include Api::Shared::ErrorsHelper
+  include Api::Shared::LoggerHelper
   include Api::GeocodeHelper 
 
   before_filter :validate_params
@@ -68,9 +69,9 @@ class Api::GeocodeController < ApplicationController
 
     if @markers.count == 0
       respond_error("No matches found")
+    else
+      batsd_increment
     end
-
-    ### common point method
   end
 
   def geocode
@@ -86,6 +87,7 @@ class Api::GeocodeController < ApplicationController
         latlng = "#{loc["lat"]}, #{loc["lng"]}"
 
         respond_success(latlng)
+        batsd_increment
       end
     end
   end

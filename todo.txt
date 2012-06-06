@@ -29,6 +29,7 @@ fallriver IDX - TODO
 #24 - make sure that we are actually getting all historical datas
 #25 - index ListingID on listings and property_media
 #26 - make sure indexes were pushed to heroku 
+#27 - lock down ALL controller actions or there will be no @user object to tie into the batsd implementation
 
 COMPLETED
 #1 - write Property seed task
@@ -38,6 +39,7 @@ COMPLETED
 #10 - better error messages in api/properties/invalid_parameters
 #17 - figure out how to add limit in to the api (maybe check for its presence and add it as a first term)
 #14 - indexes for database (save for last, learn from postgres documentation: it's good.)
+
 
 TO TEST
 #4 - write Property update task

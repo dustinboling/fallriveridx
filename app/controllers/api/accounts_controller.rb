@@ -1,5 +1,6 @@
 class Api::AccountsController < ApplicationController
   include Api::Shared::ErrorsHelper
+  include Api::Shared::LoggerHelper
 
   before_filter :set_acceptable_params
   before_filter :validate_params
@@ -9,6 +10,7 @@ class Api::AccountsController < ApplicationController
   def show
     if User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
+      batsd_increment
     elsif !params[:Token]
       respond_error("No token supplied.")
     else

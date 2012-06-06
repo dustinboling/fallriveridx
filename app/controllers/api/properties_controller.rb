@@ -64,8 +64,10 @@ class Api::PropertiesController < ApplicationController
     # Listing ID is preferred as it is a better, more performant key.
     if params[:ListingID]
       @listing = Listing.where(:ListingID => params[:ListingID]) 
+      batsd_increment
     elsif params[:FullStreetAddress]
       @listing = Listing.where(:FullStreetAddress => params[:FullStreetAddress])
+      batsd_increment
     end
   end
 
@@ -109,7 +111,6 @@ class Api::PropertiesController < ApplicationController
   end
 
   def resolve_site_url
-
   end
 
   ###
