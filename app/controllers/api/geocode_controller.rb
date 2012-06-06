@@ -106,8 +106,8 @@ class Api::GeocodeController < ApplicationController
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != http_ref
         ref_split = http_ref.split('/')
-        while ref_split.count < 5
-          ref_split = ref_split.pop
+        if ref_split.count > 5
+          ref_split = ref_split[0..3]
         end
         http_ref = ref_split.join('/')
 
