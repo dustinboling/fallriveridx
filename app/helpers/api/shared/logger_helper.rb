@@ -1,9 +1,13 @@
 module Api::Shared::LoggerHelper
   def batsd_increment(options={})
     # compose counter
-    ctr_token = @user.authentication_token
+    if !@user
+      @ctr_token = "UNKNOWN"
+    else
+      @ctr_token = @user.authentication_token
+    end
     ctr_req = params[:controller] + '.' + params[:action]
-    counter = ctr_token + "." + ctr_req
+    counter = @ctr_token + "." + ctr_req
 
     if options[:success] == false
       counter = counter + ".fail"
