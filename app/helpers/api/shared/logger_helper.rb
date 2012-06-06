@@ -2,6 +2,7 @@ module Api::Shared::LoggerHelper
   def batsd_increment(options={})
     # compose counter
     if !@user
+      raise request.env["HTTP_REFERER"].inspect
       @ctr_token = "UNKNOWN"
     else
       @ctr_token = @user.authentication_token
