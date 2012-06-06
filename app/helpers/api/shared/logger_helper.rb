@@ -3,15 +3,16 @@ module Api::Shared::LoggerHelper
     # compose counter
     ctr_token = @user.authentication_token
     ctr_req = params[:controller] + '.' + params[:action]
+    counter = ctr_token + "." + ctr_req
 
     if options[:success] == false
-      @counter = ctr_token + "." + ctr_req + ".fail"
-    else
-      @counter = ctr_token + "." + ctr_req + ".success"
+      counter = counter + ".fail"
+    elsif options[:success] == true
+      counter = counter + ".success"
     end
 
     # log stat
-    $statsd.increment(@counter)
+    $statsd.increment(counter)
   end
 
   def batsd_log_failure

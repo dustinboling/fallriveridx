@@ -10,7 +10,7 @@ class Api::AccountsController < ApplicationController
   def show
     if User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
-      batsd_increment
+      batsd_increment(:success => true)
     elsif !params[:Token]
       batsd_increment(:success => false)
       respond_error("No token supplied.")
