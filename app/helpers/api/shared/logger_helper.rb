@@ -5,7 +5,7 @@ module Api::Shared::LoggerHelper
       if !request.env["HTTP_REFERER"]
         @ctr_token = "UNKNOWN"
       else
-        @ctr_token = "UNKOWN@" request.env["HTTP_REFERER"]
+        @ctr_token = "UNKOWN@" + request.env["HTTP_REFERER"]
       end
     else
       @ctr_token = @user.authentication_token
