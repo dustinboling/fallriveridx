@@ -99,13 +99,22 @@ class Api::GeocodeController < ApplicationController
       respond_error("You have not supplied a token")
     elsif User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
+      http_ref = request.env["HTTP_REFERER"]
 
       if @user.authentication_token == "NULL"
         batsd_increment(:success => false)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
-      elsif @user.site_url != request.env["HTTP_REFERER"]
-        batsd_increment(:success => false)
-        respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
+      elsif @user.site_url != http_ref
+        ref_split = http_ref.split('/')
+        while ref_split.count < 5
+          ref_split = ref_split.pop
+        end
+        http_ref = ref_split.join('/')
+
+        if @user.site_url != http_ref
+          batsd_increment(:success => false)
+          respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
+        end
       elsif @user.site_url == "NULL"
         batsd_increment(:success => false)
         respond_error("You have not activated a site on this token yet.") 
