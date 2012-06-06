@@ -6,7 +6,7 @@ class Api::GeocodeController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "LotSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
+  ACCEPTABLE_PARAMS = ["Token", "Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "LotSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
 
   def index
     ### boundary method
