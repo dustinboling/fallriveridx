@@ -4,6 +4,7 @@ class Api::GeocodeController < ApplicationController
   include Api::GeocodeHelper 
 
   before_filter :validate_params
+  before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["Address", "Limit", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "LotSizeSQFT", "ne_long", "sw_long", "ne_lat", "sw_lat", "controller", "action", "format", "callback", "_"]
 
@@ -89,6 +90,29 @@ class Api::GeocodeController < ApplicationController
         respond_success(latlng)
         batsd_increment
       end
+    end
+  end
+
+  def authenticate_referrer
+    if params[:Token] == "" || nil
+      batsd_increment(:success => false)
+      respond_error("You have not supplied a token")
+    elsif User.find_by_authentication_token(params[:Token])
+      @user = User.find_by_authentication_token(params[:Token])
+
+      if @user.authentication_token == "NULL"
+        batsd_increment(:success => false)
+        respond_error("Your token is invalid. Please make sure your subscription is still active.")
+      elsif @user.site_url != request.env["HTTP_REFERER"]
+        batsd_increment(:success => false)
+        respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
+      elsif @user.site_url == "NULL"
+        batsd_increment(:success => false)
+        respond_error("You have not activated a site on this token yet.") 
+      end
+    else
+      batsd_increment(:success => false)
+      respond_error("Could not find an account with this API key. Please verify and update your API key.")
     end
   end
 
