@@ -5,7 +5,7 @@ module Api::Shared::LoggerHelper
       if !request.env["HTTP_REFERER"]
         @ctr_token = "UNKNOWN"
       else
-        http_ref = request.env["HTTP_REFERER"].gsub(/http[s]?:\/\/[^\s]+/, "")
+        http_ref = request.env["HTTP_REFERER"].gsub(/http[s]?:\/\//, "")
         @ctr_token = "UNKOWN-at-" + http_ref
       end
     else
