@@ -12,8 +12,10 @@ class Api::AccountsController < ApplicationController
       @user = User.find_by_authentication_token(params[:Token])
       batsd_increment
     elsif !params[:Token]
+      batsd_increment(:success => false)
       respond_error("No token supplied.")
     else
+      batsd_increment(:success => false)
       respond_error("Invalid API key.")
     end 
   end
