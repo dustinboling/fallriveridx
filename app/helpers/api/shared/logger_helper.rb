@@ -2,8 +2,11 @@ module Api::Shared::LoggerHelper
   def batsd_increment(options={})
     # compose counter
     if !@user
-      raise request.env["HTTP_REFERER"].inspect
-      @ctr_token = "UNKNOWN"
+      if !request.env["HTTP_REFERER"]
+        @ctr_token = "UNKNOWN"
+      else
+        @ctr_token = "UNKOWN@" request.enc["HTTP_REFERER"]
+      end
     else
       @ctr_token = @user.authentication_token
     end
