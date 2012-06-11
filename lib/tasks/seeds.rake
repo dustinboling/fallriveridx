@@ -15,77 +15,58 @@ namespace :seed do
     puts "ok!"
 
     puts "populating fields array..."
-    csv = CSV.read("#{Dir.pwd}/property_fields.txt")
-    fields = csv.shift.map { |i| i.to_s }
+    listing = Listing.new
+    fields = listing.columns
 
     # enter year
-    last_year = `tail -n 1 #{Dir.pwd}/last_year.txt`.to_i
-    @current_year = last_year + 1
-
-    # count the records, for the given year
-    print "getting the total number of records for #{@current_year}..."
-    get_count
-
-    # jump to next year if no records for the given year
-    until !@count.nil?
-      @current_year = @current_year + 1
-      print "no records. checking #{@current_year}..."
+    @current_year = 1980
+    while @current_year < 2013
+      # count the records, for the given year
+      print "getting the total number of records for #{@current_year}..."
       get_count
-    end
 
-    puts "done!"
-    puts "total number of records: #{@count}"
-
-    # write to database, split into batches if necessary
-    @counter = 0
-    print "Committing properties for #{@current_year}:\n "
-    split_records
-    split_records_count = @offset.count
-    batch_count = 1
-    @offset.each do |key, offset|
-      print "\nBatch #{batch_count} of #{split_records_count}"
-      begin
-        @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
-          begin
-            print "\r#{@counter}/#{@count}"
-            @listing = Listing.new
-
-            fields.each do |field|
-              stripped_field = field.gsub(/'/, "")
-              @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
-            end
-            @listing.save
-            @counter = @counter + 1
-          rescue Timeout::Error => e
-            puts "This happened: #{e}, retrying..."
-            redo
-          end
-        end
-        batch_count = batch_count + 1
-      rescue Timeout::Error => e
-        puts "Encountered #{e} attempting retry..."
-        redo
+      # jump to next year if no records for the given year
+      until !@count.nil?
+        @current_year = @current_year + 1
+        print "no records. checking #{@current_year}..."
+        get_count
       end
+      puts "total number of records: #{@count}"
+
+      # write to database, split into batches if necessary
+      @counter = 0
+      print "Committing properties for #{@current_year}:\n "
+      split_records
+      split_records_count = @offset.count
+      batch_count = 1
+      @offset.each do |key, offset|
+        print "\nBatch #{batch_count} of #{split_records_count}"
+        begin
+          @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
+            begin
+              print "\r#{@counter}/#{@count}"
+              @listing = Listing.new
+
+              fields.each do |field|
+                stripped_field = field.gsub(/'/, "")
+                @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+              end
+              @listing.save
+              @counter = @counter + 1
+            rescue Timeout::Error => e
+              puts "This happened: #{e}, retrying..."
+              redo
+            end
+          end
+          batch_count = batch_count + 1
+        rescue Timeout::Error => e
+          puts "Operation timed out, attempting retry..."
+          redo
+        end
+      end
+      puts "Successfully added #{@counter} records to the database from #{@current_year}."
+      @current_year = @current_year + 1
     end
-    puts "\nAll done."
-
-    # write current year to placeholder file
-    puts "Incrementing year..."
-    f = File.open("#{Dir.pwd}/last_year.txt", 'a')
-    f.write("#{@current_year}\n")
-    f.close 
-
-    # write success to log
-    puts "Writing to log..."
-    log_success("properties_seed_log.txt", true)
-
-    # store unix timestamp
-    f = File.open("#{Dir.pwd}/log/last_property_update.txt", 'a')
-    f.write("#{DateTime.now.to_time.to_i}\n")
-    f.close
-
-    # all done
-    puts "Successfully added #{@counter} records to the database from #{@current_year}."
   end
 
   desc "Initial agents seed"
