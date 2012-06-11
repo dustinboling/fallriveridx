@@ -117,8 +117,7 @@ class Api::PropertiesController < ApplicationController
         Batsd.increment(:success => false, :error_type => :auth)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != request.env["HTTP_REFERER"]
-        Batsd.increment(:success => false, :error_type => :referer)
-        respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
+        IdxError.log(:type => :referer)
       elsif @user.site_url == "NULL"
         Batsd.increment(:success => false, :error_type => :referer)
         respond_error("You have not activated a site on this token yet.") 
