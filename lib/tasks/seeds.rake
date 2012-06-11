@@ -21,7 +21,7 @@ namespace :seed do
     @current_year = 1980
     while @current_year < 2013
       # count the records, for the given year
-      print "getting the total number of records for #{@current_year}..."
+      puts "getting the total number of records for #{@current_year}..."
       get_count
 
       # jump to next year if no records for the given year
@@ -30,11 +30,11 @@ namespace :seed do
         print "no records. checking #{@current_year}..."
         get_count
       end
-      puts "total number of records: #{@count}"
+      puts "\ntotal number of records: #{@count}"
 
       # write to database, split into batches if necessary
       @counter = 0
-      print "Committing properties for #{@current_year}:\n "
+      print "\nCommitting properties for #{@current_year}:\n "
       split_records
       split_records_count = @offset.count
       batch_count = 1
@@ -53,17 +53,17 @@ namespace :seed do
               @listing.save
               @counter = @counter + 1
             rescue Timeout::Error => e
-              puts "This happened: #{e}, retrying..."
+              puts "\nThis happened: #{e}, retrying..."
               redo
             end
           end
           batch_count = batch_count + 1
         rescue Timeout::Error => e
-          puts "Operation timed out, attempting retry..."
+          puts "\nOperation timed out, attempting retry..."
           redo
         end
       end
-      puts "Successfully added #{@counter} records to the database from #{@current_year}."
+      puts "\nSuccessfully added #{@counter} records to the database from #{@current_year}."
       @current_year = @current_year + 1
     end
   end
