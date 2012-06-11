@@ -122,40 +122,4 @@ class Api::PropertiesController < ApplicationController
 
   def resolve_site_url
   end
-
-  ###
-  # logging
-  def statsd_log_success(type)
-    site_url = request.env["HTTP_REFERER"]
-    controller = params[:controller]
-    action = params[:action]
-    msg = BUILDME
-
-    u = UDPSocket.new
-    u.bind("127.0.0.1", 8125)
-    u.send(msg, 0, "107.22.45.199", 8125)
-  end
-
-  # TODO: make this a background task due to use of resolve_site_url
-  def statsd_log_fail(type, msg)
-    site_url = request.env["HTTP_REFERER"]
-    controller = params[:controller]
-    action = params[:action]
-    msg = BUILDME + msg
-
-    if site_url == nil
-      resolve_site_url
-      send_udp_packet(msg)
-    end
-
-    u = UDPSocket.new
-    u.bind("127.0.0.1", 8125)
-    u.send(msg)
-  end
-
-  def send_udp_packet(msg)
-    u = UDPSocket.new
-    u.bind("127.0.0.1", 8125)
-    u.send(msg)
-  end
 end
