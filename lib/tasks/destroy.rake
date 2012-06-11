@@ -6,7 +6,7 @@ namespace :destroy do
     puts "Total number of listings: #{count}"
     destroy_count = 0
     Listing.where.('id > 0').find_each do |listing|
-      Listing.delete
+      listing.delete
       destroy_count = destroy_count + 1
     end
     puts "Total listings destroyed: #{destroy_count}"
