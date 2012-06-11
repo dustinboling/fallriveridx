@@ -7,7 +7,6 @@ module Api::Shared::LoggerHelper
     # :success => boolean (was the request successful?)
     # :error_type => :auth, :referer, :params
     def self.increment(options={})
-      request ||= nil
       if !options[:request].nil?
         request = options[:request]
       end
