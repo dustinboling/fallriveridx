@@ -2,6 +2,7 @@ class Api::PropertiesController < ApplicationController
   # TODO: figure out how to dry this up.
   include Api::Shared::ErrorsHelper
   include Api::Shared::LoggerHelper
+  include Api::Shared::LoggerHelper::Batsd
 
   require 'socket'
 
@@ -15,6 +16,7 @@ class Api::PropertiesController < ApplicationController
 
   def search
     # construct SQL query
+    request = request
     if @user_params.keys.count == 0
       Batsd.increment(:success => false, :error_type => :params)
       respond_error("No parameters supplied.")

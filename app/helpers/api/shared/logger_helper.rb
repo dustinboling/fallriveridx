@@ -63,7 +63,4 @@ module Api::Shared::LoggerHelper
     # log stat
     $statsd.increment(counter)
   end
-
-  def batsd_log_failure
-  end
 end
