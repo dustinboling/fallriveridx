@@ -10,9 +10,8 @@ module Api::Shared::ErrorsHelper
         err_opts = {}
         err_opts[:success] = false
         err_opts[:error_type] = :params
-        err_opts[:params] = @params
-        err_opts[:request] = @request
-        request = @request
+        err_opts[:params] = options[:params]
+        err_opts[:request] = options[:request]
 
         Batsd.increment(err_opts)
         respond_error("No parameters supplied.")
@@ -22,7 +21,6 @@ module Api::Shared::ErrorsHelper
         err_opts[:error_type] = :params
         err_opts[:params] = @params
         err_opts[:request] = @request
-        request = @request
 
         Batsd.increment(err_opts)
         respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate on this site, then try again.")
