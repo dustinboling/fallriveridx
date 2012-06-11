@@ -6,8 +6,7 @@ module Api::Shared::LoggerHelper
     # Dynamically increments a batsd counter based on HTTP_REFERER 
     # :success => boolean (was the request successful?)
     # :error_type => :auth, :referer, :params
-    def increment(options={})
-      request ||= nil
+    def self.increment(options={})
       if @user == nil
         if !request.env["HTTP_REFERER"]
           @ctr_token = "UNKNOWN"
