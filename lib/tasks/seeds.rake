@@ -47,8 +47,8 @@ namespace :seed do
               @listing = Listing.new
 
               fields.each do |field|
-                stripped_field = field.gsub(/'/, "")
-                @listing["#{field.gsub(/'/, "")}"] = data["#{stripped_field}"]
+                stripped_field = field.name.gsub(/'/, "")
+                @listing["#{stripped_field}"] = data["#{stripped_field}"]
               end
               @listing.save
               @counter = @counter + 1
