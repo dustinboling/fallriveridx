@@ -15,8 +15,7 @@ namespace :seed do
     puts "ok!"
 
     puts "populating fields array..."
-    listing = Listing.new
-    fields = listing.columns
+    fields = Listing.columns
 
     # enter year
     @current_year = 1980
