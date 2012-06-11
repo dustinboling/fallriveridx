@@ -1,7 +1,7 @@
 class Api::PropertiesController < ApplicationController
   # TODO: figure out how to dry this up.
   include Api::Shared::ErrorsHelper
-  include Api::Shared::Batsd
+  Batsd = Api::Shared::BatsdHelper
 
   require 'socket'
 
