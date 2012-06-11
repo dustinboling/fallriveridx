@@ -2,7 +2,6 @@ class Api::PropertiesController < ApplicationController
   # TODO: figure out how to dry this up.
   include Api::Shared::ErrorsHelper
   include Api::Shared::LoggerHelper
-  include Api::Shared::LoggerHelper::Batsd
 
   require 'socket'
 
@@ -16,9 +15,8 @@ class Api::PropertiesController < ApplicationController
 
   def search
     # construct SQL query
-    request = request
     if @user_params.keys.count == 0
-      Batsd.increment(:success => false, :error_type => :params)
+      Batsd.increment(:request => request, :success => false, :error_type => :params)
       respond_error("No parameters supplied.")
     else
       query = "SELECT * FROM listings WHERE "
@@ -30,7 +28,7 @@ class Api::PropertiesController < ApplicationController
           elsif price_exp.match('<')
             query = query + "\"ListPrice\" < '#{value[1..-1]}' AND "
           else
-            Batsd.increment(:success => false, :error_type => :params)
+            Batsd.increment(:request => request, :success => false, :error_type => :params)
             respond_error("Could not parse ListPrice.")
           end 
         elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /BuildingSize/.match(key)
@@ -52,19 +50,19 @@ class Api::PropertiesController < ApplicationController
         query = query[0..-6]
         query = query + " LIMIT 15" + ";"
       else
-        Batsd.increment(:success => false, :error_type => :params)
+        Batsd.increment(:request => request, :success => false, :error_type => :params)
         respond_error("No parameters supplied.")
       end
 
       if query == "SELECT * FROM listings WHERE "
-        Batsd.increment(:success => false, :error_type => :params)
+        Batsd.increment(:request => request, :success => false, :error_type => :params)
         respond_error("No parameters supplied")
       else
         # push listings to view
         @listings = Listing.find_by_sql(query)
 
         # log to batsd
-        Batsd.increment(:success => true)
+        Batsd.increment(:request => request, :success => true)
       end
     end
   end
@@ -74,10 +72,10 @@ class Api::PropertiesController < ApplicationController
     # Listing ID is preferred as it is a better, more performant key.
     if params[:ListingID]
       @listing = Listing.where(:ListingID => params[:ListingID]) 
-      Batsd.increment(:success => true)
+      Batsd.increment(:request => request, :success => true)
     elsif params[:FullStreetAddress]
       @listing = Listing.where(:FullStreetAddress => params[:FullStreetAddress])
-      Batsd.increment(:success => true)
+      Batsd.increment(:request => request, :success => true)
     end
   end
 
@@ -96,7 +94,7 @@ class Api::PropertiesController < ApplicationController
           @user_params["#{key}"] = value
         end
       else
-        Batsd.increment(:success => false)
+        Batsd.increment(:request => request, :success => false)
         respond_error("The following parameter is invalid: #{key}")
       end
     end
@@ -105,23 +103,23 @@ class Api::PropertiesController < ApplicationController
   # change @user to user unless we need the instance varible up above
   def authenticate_referrer
     if params[:Token] == "" || nil
-      Batsd.increment(:success => false)
+      Batsd.increment(:request => request, :success => false)
       respond_error("You have not supplied a token")
     elsif User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
 
       if @user.authentication_token == "NULL"
-        Batsd.increment(:success => false, :error_type => :auth)
+        Batsd.increment(:request => request, :success => false, :error_type => :auth)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != request.env["HTTP_REFERER"]
-        Batsd.increment(:success => false, :error_type => :referer)
+        Batsd.increment(:request => request, :success => false, :error_type => :referer)
         respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
       elsif @user.site_url == "NULL"
-        Batsd.increment(:success => false, :error_type => :referer)
+        Batsd.increment(:request => request, :success => false, :error_type => :referer)
         respond_error("You have not activated a site on this token yet.") 
       end
     else
-      Batsd.increment(:success => false, :error_type => :auth)
+      Batsd.increment(:request => request, :success => false, :error_type => :auth)
       respond_error("Could not find an account with this API key. Please verify and update your API key.")
     end
   end
