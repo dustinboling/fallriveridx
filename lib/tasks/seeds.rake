@@ -308,7 +308,7 @@ namespace :seed do
       end
     rescue Timeout::Error => e
       puts "Rescuing from Timeout::Error, retrying..."
-      redo
+      retry
     end
   end
 
