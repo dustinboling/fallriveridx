@@ -21,16 +21,15 @@ namespace :seed do
     @current_year = 1980
     while @current_year < 2013
       # count the records, for the given year
-      puts "getting the total number of records for #{@current_year}..."
       get_count
-
+      
       # jump to next year if no records for the given year
       until !@count.nil?
         @current_year = @current_year + 1
         print "no records. checking #{@current_year}..."
         get_count
       end
-      puts "\ntotal number of records: #{@count}"
+      puts "\ntotal number of records for #{@current_year}: #{@count}"
 
       # write to database, split into batches if necessary
       @counter = 0
@@ -303,8 +302,13 @@ namespace :seed do
   ###
   # procedures
   def get_count
-    @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 200) do |data|
-      @count = @client.rets_data[:count].to_i
+    begin
+      @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :count_mode => :both, :limit => 200) do |data|
+        @count = @client.rets_data[:count].to_i
+      end
+    rescue Timeout::Error => e
+      puts "Rescuing from Timeout::Error, retrying..."
+      redo
     end
   end
 
