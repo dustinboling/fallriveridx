@@ -26,6 +26,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * BedroomsTotal (returns greater than or equal to the number given)
 * BathsTotal (returns greater than or equal to the number given)
 * BuildingSize (returns greater than or equal to the number given)
+* SortBy (accepts Column|[ASC/DESC])
 
 ### Show (Single Property Details)
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.

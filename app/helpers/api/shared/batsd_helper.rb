@@ -3,17 +3,12 @@ module Api::Shared::BatsdHelper
   # This module attempts to do as much logging as possible with as few methods
   # as possible. The idea is to keep as calls to the logger as possible. 
 
-  # Dynamically increments a batsd counter based on HTTP_REFERER 
+  # Dynamically increments a batsd counter based on HTTP_REFERER.
+  # This breaks in development because request does not exist.
   # :success => boolean (was the request successful?)
   # :error_type => :auth, :referer, :params
   module Batsd
     def self.increment(options={})
-      if !options[:request].nil?
-        request = options[:request]
-      elsif !options[:params].nil?
-        params = options[:params]
-      end
-
       if @user == nil
         if !request.env["HTTP_REFERER"]
           @ctr_token = "UNKNOWN"

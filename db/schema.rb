@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531214448) do
+ActiveRecord::Schema.define(:version => 20120612163203) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -593,6 +593,12 @@ ActiveRecord::Schema.define(:version => 20120531214448) do
     t.boolean  "active"
     t.text     "website_url"
     t.string   "website_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tracts", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

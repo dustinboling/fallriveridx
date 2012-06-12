@@ -1,5 +1,4 @@
 class Api::PropertiesController < ApplicationController
-  # TODO: figure out how to dry this up.
   include Api::Shared::ErrorsHelper
   include Api::Shared::BatsdHelper
 
@@ -8,15 +7,12 @@ class Api::PropertiesController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["ListingID", "FullStreetAddress", "City", "ZipCode", 
+  ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "FullStreetAddress", "City", "ZipCode", 
     "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", 
     "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", 
     "action", "format", "Token"]
 
   def search
-    @params = params
-    @request = request
-
     # construct SQL query
     if @user_params.keys.count == 0
       Batsd.increment(:success => false, :error_type => :params)
@@ -36,6 +32,11 @@ class Api::PropertiesController < ApplicationController
           end 
         elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /BuildingSize/.match(key)
           query = query + "\"#{key}\" >= '#{value}' AND "
+        elsif /SortBy/.match(key)
+          value_ary = value.split('|')
+          column = value_ary[0]
+          direction = value_ary[1]
+          query = query + "ORDER BY \"#{column}\" #{direction}"
         elsif /Limit/.match(key)
           @query_limit = " LIMIT #{value}"
         else
@@ -71,8 +72,6 @@ class Api::PropertiesController < ApplicationController
   end
 
   def show  
-    @params = params
-    @request = request
     # This action currently only supports the ListingID field OR FullStreetAddress (plus Token for authentication).
     # Listing ID is preferred as it is a better, more performant key.
     if params[:ListingID]
@@ -117,7 +116,8 @@ class Api::PropertiesController < ApplicationController
         Batsd.increment(:success => false, :error_type => :auth)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != request.env["HTTP_REFERER"]
-        IdxError.log(:type => :referer, :params => @params, :request => @request)
+        Batsd.increment(:success => false, :error_type => :referer)
+        respond_error("This site has not been activated")
       elsif @user.site_url == "NULL"
         Batsd.increment(:success => false, :error_type => :referer)
         respond_error("You have not activated a site on this token yet.") 
