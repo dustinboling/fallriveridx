@@ -1,6 +1,6 @@
 class Api::AccountsController < ApplicationController
   include Api::Shared::ErrorsHelper
-  include Api::Shared::LoggerHelper
+  include Api::Shared::BatsdHelper
 
   before_filter :set_acceptable_params
   before_filter :validate_params
@@ -10,12 +10,12 @@ class Api::AccountsController < ApplicationController
   def show
     if User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
-      batsd_increment(:success => true)
+      batsd_log_success
     elsif !params[:Token]
-      batsd_increment(:success => false)
+      batsd_log_error(:type => :auth)
       respond_error("No token supplied.")
     else
-      batsd_increment(:success => false)
+      batsd_log_error(:type => :auth)
       respond_error("Invalid API key.")
     end 
   end
@@ -38,11 +38,14 @@ class Api::AccountsController < ApplicationController
       @user.site_ip_address = request.remote_ip
 
       if @user.save
+        batsd_log_success
         respond_success("You have activated your subscription for this site.")
       else
+        batsd_log_error(:type => :unknown)
         respond_error("There has been an error with your request, please try again.")
       end
     else 
+      batsd_log_error(:type => :auth)
       respond_error("Invalid API key.")
     end
   end
@@ -58,14 +61,17 @@ class Api::AccountsController < ApplicationController
       @acceptable_params = ["Token", "controller", "action", "format"]
       
       if !params.include?("Token")
+        batsd_log_error(:type => :auth)
         respond_error("You did not include a Token.")
       end
     when "create"
       @acceptable_params = ["username", "email", "controller", "action", "format"]
 
       if !params.include?("username")
+        batsd_log_error(:type => :auth)
         respond_error("You did not include a username.")
       elsif !params.include?("email")
+        batsd_log_error(:type => :params)
         respond_error("You did not include an email address.")
       end
     when "update"
@@ -81,11 +87,13 @@ class Api::AccountsController < ApplicationController
         if /action/.match(key) || /controller/.match(key) || /format/.match(key) || /Token/.match(key)
           # do nothing
         elsif !params.include?("SiteUrl")
+          batsd_log_error(:type => :params)
           respond_error("You did not include a SiteUrl.")
         else
           @user_params["#{key}"] = value
         end
       else
+        batsd_log_error(:type => :params)
         respond_error("The following parameter is invalid: #{key}")
       end
     end

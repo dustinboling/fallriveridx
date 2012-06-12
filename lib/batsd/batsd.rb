@@ -8,23 +8,17 @@ module Api::Shared::BatsdHelper
 # :error_type => :auth, :referer, :params
 module Batsd
   def self.increment(options={})
-    if !options[:request].nil?
-      request = options[:request]
-    elsif !options[:params].nil?
-      params = options[:params]
-    end
-
     if @user == nil
-      if !request.env["HTTP_REFERER"]
+      if options[:referer] == nil
         @ctr_token = "UNKNOWN"
       else
-        http_ref = request.env["HTTP_REFERER"].gsub(/http[s]?:\/\//, "")
+        http_ref = options[:referer].gsub(/http[s]?:\/\//, "")
         @ctr_token = "UNKOWN-at-" + http_ref
       end
     else
       @ctr_token = @user.authentication_token
     end
-    ctr_req = params[:controller] + '.' + params[:action]
+    ctr_req = options[:controller] + '.' + options[:action]
     counter = @ctr_token + "." + ctr_req
 
     if options[:success] == false

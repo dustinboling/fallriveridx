@@ -1,6 +1,6 @@
 class Api::GeocodeController < ApplicationController
   include Api::Shared::ErrorsHelper
-  include Api::Shared::LoggerHelper
+  include Api::Shared::BatsdHelper
   include Api::GeocodeHelper 
 
   before_filter :validate_params
@@ -26,6 +26,7 @@ class Api::GeocodeController < ApplicationController
         elsif price_exp.match('<')
           @query = @query + "\"ListPrice\" < '#{value[1..-1]}' AND "
         else
+          batsd_log_error(:type => :params)
           respond_error("Could not parse ListPrice")
         end
       elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /LotSizeSQFT/.match(key) || /BuildingSize/.match(key)
@@ -69,9 +70,10 @@ class Api::GeocodeController < ApplicationController
     end
 
     if @markers.count == 0
+      batsd_log_success
       respond_error("No matches found")
     else
-      batsd_increment
+      batsd_log_success
     end
   end
 
@@ -79,30 +81,30 @@ class Api::GeocodeController < ApplicationController
     gc = Geocoder.search(params[:Address])
 
     if gc.empty?
+      batsd_log_success
       respond_error("No results found")
+    elsif gc.count > 1
+      batsd_log_success
+      respond_error("Too many results, please make your search more specific.")
     else
-      if gc.count > 1
-        respond_error("Too many results, please make your search more specific.")
-      else
-        loc = gc.first.geometry["location"]
-        latlng = "#{loc["lat"]}, #{loc["lng"]}"
+      loc = gc.first.geometry["location"]
+      latlng = "#{loc["lat"]}, #{loc["lng"]}"
 
-        respond_success(latlng)
-        batsd_increment
-      end
+      batsd_log_success
+      respond_success(latlng)
     end
   end
 
   def authenticate_referrer
     if params[:Token] == "" || nil
-      batsd_increment(:success => false)
+      batsd_log_error(:type => :auth)
       respond_error("You have not supplied a token")
     elsif User.find_by_authentication_token(params[:Token])
       @user = User.find_by_authentication_token(params[:Token])
       http_ref = request.env["HTTP_REFERER"]
 
       if @user.authentication_token == "NULL"
-        batsd_increment(:success => false)
+        batsd_log_error(:type => :auth)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
       elsif @user.site_url != http_ref
         ref_split = http_ref.split('/')
@@ -112,15 +114,15 @@ class Api::GeocodeController < ApplicationController
         http_ref = ref_split.join('/')
 
         if @user.site_url != http_ref
-          batsd_increment(:success => false)
+          batsd_log_error(:type => :referer)
           respond_error("This site (#{request.env["HTTP_REFERER"]}) is not activated. Please activate this site, then try again.")
         end
       elsif @user.site_url == "NULL"
-        batsd_increment(:success => false)
+        batsd_log_error(:type => :referer)
         respond_error("You have not activated a site on this token yet.") 
       end
     else
-      batsd_increment(:success => false)
+      batsd_log_error(:type => :auth)
       respond_error("Could not find an account with this API key. Please verify and update your API key.")
     end
   end
@@ -145,6 +147,7 @@ class Api::GeocodeController < ApplicationController
           @user_params["#{key}"] = value
         end
       else
+        batsd_log_error(:type => :params)
         respond_error("The following parameter is invalid: #{key}")
       end
     end
@@ -157,8 +160,10 @@ class Api::GeocodeController < ApplicationController
       end
     when "index"
       if !params.include?("ne_long" && "sw_long" && "ne_lat" && "sw_lat")
+        batsd_log_error(:type => :params)
         respond_error("You must include all four geocode parameters.")
       elsif params.include?("Address")
+        batsd_log_error(:type => :params)
         respond_error("Key: 'Address' is unacceptable for the index action")
       else
         # do nothing
