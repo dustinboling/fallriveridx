@@ -7,8 +7,12 @@ module Api::Shared::BatsdHelper
   # Options setters to get around scope issues.
   def batsd_log_error(options={})
     opts = {}
+    if !@user
+      opts[:auth_token] = @user.authentication_token
+    else
+      opts[:auth_token] = nil
+    end
     opts[:success] = false
-    opts[:user] = @user
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
@@ -27,8 +31,12 @@ module Api::Shared::BatsdHelper
 
   def batsd_log_success
     opts = {}
+    if !@user
+      opts[:auth_token] = @user.authentication_token
+    else
+      opts[:auth_token] = nil
+    end
     opts[:success] = true
-    opts[:user] = @user
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
@@ -41,7 +49,7 @@ module Api::Shared::BatsdHelper
   # :error_type => :auth, :referer, :params
   module Batsd
     def self.increment(options={})
-      if opts[:user] == nil
+      if options[:auth_token] == nil
         if options[:referer] == nil
           @ctr_token = "UNKNOWN"
         else
@@ -49,7 +57,7 @@ module Api::Shared::BatsdHelper
           @ctr_token = "UNKOWN-at-" + http_ref
         end
       else
-        @ctr_token = @user.authentication_token
+        @ctr_token = options[:auth_token]
       end
       ctr_req = options[:controller] + '.' + options[:action]
       counter = @ctr_token + "." + ctr_req
