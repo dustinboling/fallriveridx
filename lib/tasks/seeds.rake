@@ -18,8 +18,8 @@ namespace :seed do
     fields = Listing.columns
 
     # enter year
-    @current_year = 1980
-    while @current_year < 2013
+    @current_year = 2005
+    while @current_year < 2012
       # count the records, for the given year
       get_count
       

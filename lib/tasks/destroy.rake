@@ -11,4 +11,14 @@ namespace :destroy do
     end
     puts "Total listings destroyed: #{destroy_count}"
   end
+
+  desc "destroy listings from 2005"
+  task :listings2005 => :environment do
+    l = Listing.where('"ListingDate" like ?', '2005-%')
+    count = l.count
+    puts "There are #{count} listings from 2005"
+    l.find_each(&:destroy)
+    puts "Now there are none."
+  end
+
 end
