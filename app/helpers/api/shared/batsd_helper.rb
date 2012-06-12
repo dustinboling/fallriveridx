@@ -31,7 +31,7 @@ module Api::Shared::BatsdHelper
 
   def batsd_log_success
     opts = {}
-    if !@user
+    if @user
       opts[:auth_token] = @user.authentication_token
     else
       opts[:auth_token] = nil
