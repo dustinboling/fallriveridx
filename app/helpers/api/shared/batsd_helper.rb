@@ -8,10 +8,10 @@ module Api::Shared::BatsdHelper
   def batsd_log_error(options={})
     opts = {}
     opts[:success] = false
+    opts[:user] = @user
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
-    @user = @user
 
     if options[:type] == :referer
       opts[:error_type] = :referer
@@ -28,6 +28,7 @@ module Api::Shared::BatsdHelper
   def batsd_log_success
     opts = {}
     opts[:success] = true
+    opts[:user] = @user
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
@@ -40,7 +41,7 @@ module Api::Shared::BatsdHelper
   # :error_type => :auth, :referer, :params
   module Batsd
     def self.increment(options={})
-      if @user == nil
+      if opts[:user] == nil
         if options[:referer] == nil
           @ctr_token = "UNKNOWN"
         else
