@@ -11,6 +11,7 @@ module Api::Shared::BatsdHelper
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
+    @user = @user
 
     if options[:type] == :referer
       opts[:error_type] = :referer
