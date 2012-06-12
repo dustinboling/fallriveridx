@@ -1,3 +1,4 @@
+module Api::Shared::BatsdHelper
 # TODO: move logger calls into respond_error and respond_success
 # This module attempts to do as much logging as possible with as few methods
 # as possible. The idea is to keep as calls to the logger as possible. 
