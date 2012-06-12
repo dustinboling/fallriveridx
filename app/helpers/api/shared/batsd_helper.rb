@@ -7,7 +7,7 @@ module Api::Shared::BatsdHelper
   # Options setters to get around scope issues.
   def batsd_log_error(options={})
     opts = {}
-    if !@user
+    if @user
       opts[:auth_token] = @user.authentication_token
     else
       opts[:auth_token] = nil
