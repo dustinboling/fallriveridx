@@ -19,7 +19,7 @@ namespace :seed do
 
     # enter year
     @current_year = 2005
-    while @current_year < 2012
+    while @current_year <= 2012
       # count the records, for the given year
       get_count
       
