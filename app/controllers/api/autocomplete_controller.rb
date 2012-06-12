@@ -14,4 +14,7 @@ class Api::AutocompleteController < ApplicationController
 
   def communities
   end
+
+  def combined
+  end
 end
