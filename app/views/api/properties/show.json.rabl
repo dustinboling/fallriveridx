@@ -4,3 +4,8 @@ attributes :ListingID, :ListAgentAgentId, :SaleAgentAgentID, :ListingKey, :City,
 
 node(:PublicRemarks){ |pr| pr.PublicRemarks.split('.').each { |s| s.capitalize }.join(".") }
 node(:ListPrice) { |lp| number_to_currency(lp.ListPrice.to_s.to_f, :precision => 0) }
+node(:property_media) do |p|
+	p.property_media.each do |pm|
+		pm
+	end
+end

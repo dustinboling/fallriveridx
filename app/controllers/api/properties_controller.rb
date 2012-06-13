@@ -5,12 +5,13 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  before_filter :authenticate_referrer
+  # before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "FullStreetAddress", "City", "ZipCode", 
-    "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", "ListPrice", 
-    "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", "controller", 
-    "action", "format", "Token"]
+  ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "FullStreetAddress", "City", 
+    "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", 
+    "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", 
+    "controller", "action", "format", "Token"]
+
 
   def search
     # construct SQL query
@@ -18,7 +19,7 @@ class Api::PropertiesController < ApplicationController
       batsd_log_error(:type => :params)
       respond_error("No parameters supplied.")
     else
-      query = "SELECT * FROM listings WHERE "
+    query = "SELECT * FROM listings WHERE "
       @user_params.each do |key, value|
         if /ListPrice/.match(key)
           price_exp = "/\A" + params[:ListPrice] + "/"
@@ -68,7 +69,7 @@ class Api::PropertiesController < ApplicationController
         respond_error("No parameters supplied")
       else
         # push listings to view
-        @listings = Listing.find_by_sql(query)
+        @listings = Listing.find_by_sql_with_associations(query)
 
         # log to batsd
         batsd_log_success

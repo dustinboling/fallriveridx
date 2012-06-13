@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120612163203) do
+ActiveRecord::Schema.define(:version => 20120613192036) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -587,6 +587,7 @@ ActiveRecord::Schema.define(:version => 20120612163203) do
     t.text    "PropMediaPixelWidth"
   end
 
+  add_index "property_media", ["ListingID"], :name => "index_property_media_on_ListingID"
   add_index "property_media", ["PropMediaKey"], :name => "index_property_media_on_PropMediaKey"
 
   create_table "subscribers", :force => true do |t|
