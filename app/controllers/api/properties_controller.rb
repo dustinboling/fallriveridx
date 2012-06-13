@@ -5,13 +5,15 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  # before_filter :authenticate_referrer
+  before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "FullStreetAddress", "City", 
     "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", 
     "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", 
     "controller", "action", "format", "Token"]
 
+  def search_summary
+  end
 
   def search
     # construct SQL query
