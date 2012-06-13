@@ -36,7 +36,12 @@ class Api::PropertiesController < ApplicationController
           value_ary = value.split('|')
           column = value_ary[0]
           direction = value_ary[1]
-          query = query + "ORDER BY \"#{column}\" #{direction}"
+          if /AND \z/.match(query)
+            query = query.gsub(/AND \z/, "")
+            query = query + "ORDER BY \"#{column}\" #{direction}"
+          else
+            query = query + "ORDER BY \"#{column}\" #{direction}"
+          end
         elsif /Limit/.match(key)
           @query_limit = " LIMIT #{value}"
         else
