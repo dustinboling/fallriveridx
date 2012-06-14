@@ -6,7 +6,7 @@ class Listing < ActiveRecord::Base
   belongs_to :agent
   belongs_to :broker
 
-  # has_many :property_media, :primary_key => :ListingID, :foreign_key => :ListingID
+  has_many :property_media, :primary_key => :ListingID, :foreign_key => :ListingID
 
   def self.find_by_sql_with_associations(query)
     listings = find_by_sql(query)
