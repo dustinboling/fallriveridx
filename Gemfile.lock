@@ -198,7 +198,6 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby
-  bundler (= 1.2.0.pre.1)
   capybara
   coffee-rails (~> 3.1.1)
   factory_girl_rails
