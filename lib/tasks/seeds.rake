@@ -42,7 +42,7 @@ namespace :seed do
         begin
           @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
             begin
-              # print "\r#{@counter}/#{@count}"
+              print "\r#{@counter}/#{@count}"
               listing = Listing.new
 
               fields.each do |field|
