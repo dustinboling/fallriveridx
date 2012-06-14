@@ -42,14 +42,14 @@ namespace :seed do
         begin
           @client.search(:search_type => :Property, :class => :RES, :query => "(ListingDate=#{@current_year}-01-01-#{@current_year}-12-31)", :limit => 10000, :offset => offset, :read_timeout => 100) do |data|
             begin
-              print "\r#{@counter}/#{@count}"
-              @listing = Listing.new
+              # print "\r#{@counter}/#{@count}"
+              listing = Listing.new
 
               fields.each do |field|
                 stripped_field = field.name.gsub(/'/, "")
-                @listing["#{stripped_field}"] = data["#{stripped_field}"]
+                listing["#{stripped_field}"] = data["#{stripped_field}"]
               end
-              @listing.save
+              listing.save
               @counter = @counter + 1
             rescue Timeout::Error => e
               puts "\nThis happened: #{e}, retrying..."
