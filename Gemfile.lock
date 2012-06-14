@@ -86,6 +86,7 @@ GEM
     heroku-api (0.2.5)
       excon (~> 0.14.0)
     hike (1.2.1)
+    hodel_3000_compliant_logger (0.1.0)
     i18n (0.6.0)
     jquery-rails (1.0.19)
       railties (~> 3.0)
@@ -104,11 +105,15 @@ GEM
     multi_json (1.2.0)
     multipart-post (1.1.5)
     netrc (0.7.4)
+    newrelic_rpm (3.3.3)
     nokogiri (1.5.4)
     oauth (0.4.6)
     oauth2 (0.5.2)
       faraday (~> 0.7)
       multi_json (~> 1.0)
+    oink (0.9.3)
+      activerecord
+      hodel_3000_compliant_logger
     pg (0.13.2)
     polyglot (0.3.3)
     rabl (0.6.13)
@@ -205,6 +210,8 @@ DEPENDENCIES
   heroku
   jquery-rails
   json
+  newrelic_rpm
+  oink
   pg
   rabl
   rails (= 3.1.6)

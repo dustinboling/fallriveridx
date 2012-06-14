@@ -5,6 +5,10 @@ gem 'rails', '3.1.6'
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
+# memory leak debugging
+gem 'oink'
+gem 'newrelic_rpm'
+
 # primary dependencies
 gem 'pg'
 gem 'sorcery'
