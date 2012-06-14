@@ -27,6 +27,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * BathsTotal (returns greater than or equal to the number given)
 * BuildingSize (returns greater than or equal to the number given)
 * SortBy (accepts Column|[ASC/DESC])
+* ListingStatus (Active or Closed)
 
 ### Show (Single Property Details)
 This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.

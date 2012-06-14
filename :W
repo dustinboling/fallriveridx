@@ -51,11 +51,6 @@ class Api::PropertiesController < ApplicationController
         end
       end
 
-      # remove trailing AND
-      if /AND \Z/.match(query)
-        query = query.gsub(/AND \Z/, "")  
-      end
-
       # check to see query has been modified, make it into an acceptable SQL query, add limit
       # note that default limit is currently set to 15
       if /AND \A/.match(query) && @query_limit
@@ -66,7 +61,11 @@ class Api::PropertiesController < ApplicationController
         query = query + " LIMIT 15" + ";"
       elsif @order_by && @query_limit
         query = query + @order_by + @query_limit + ";"
-      elsif @order_by
+      elsif /DESC\Z/.match(query) && @query_limit
+        query = query + @order_by + @query_limit + ";"
+      elsif /ASC\Z/.match(query)
+        query = query + @order_by + ";"
+      elsif /DESC\Z/.match(query)
         query = query + @order_by + ";"
       else
         batsd_log_error(:type => :params)
