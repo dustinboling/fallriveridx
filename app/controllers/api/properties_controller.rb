@@ -5,7 +5,7 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  before_filter :authenticate_referrer
+  # before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "FullStreetAddress", "City", 
     "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", 
@@ -36,6 +36,7 @@ class Api::PropertiesController < ApplicationController
         elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /BuildingSize/.match(key)
           query = query + "\"#{key}\" >= '#{value}' AND "
         elsif /SortBy/.match(key)
+          @sort_by = true
           value_ary = value.split('|')
           column = value_ary[0]
           direction = value_ary[1]
@@ -54,7 +55,7 @@ class Api::PropertiesController < ApplicationController
 
       # check to see query has been modified, make it into an acceptable SQL query, add limit
       # note that default limit is currently set to 15
-      query_exp = "/\A" + query + "/" 
+      query_exp = /\A#{query}/ 
       if query_exp.match("AND ") && @query_limit
         query = query[0..-6]
         query = query + @query_limit + ";"
