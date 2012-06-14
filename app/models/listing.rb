@@ -1,6 +1,6 @@
 class Listing < ActiveRecord::Base
-  # set primary key to listing ID, necessary 
-  # for eager loading of prop_media
+  # set primary key to listing ID
+  # NOT necessary for eager loading of prop_media
   # self.primary_key = "ListingID"
 
   belongs_to :agent
