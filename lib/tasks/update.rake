@@ -11,7 +11,7 @@ namespace :update do
       :class => :RES, 
       :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", 
       :count_mode => :both, 
-      :limit => 1
+        :limit => 1
     }
     $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
@@ -97,7 +97,7 @@ namespace :update do
       :class => :Agent, 
       :query => "(AgentSourceModificationTimestamp=#{@last_update_rets}-NOW)", 
       :count_mode => :both, 
-      :limit => 1
+        :limit => 1
     }
     $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
@@ -180,7 +180,7 @@ namespace :update do
       :class => :PROP_MEDIA,
       :query => "(PropMediaModificationTimestamp=#{@last_update_rets}-NOW)", 
       :count_mode => :both, 
-      :limit => 1
+        :limit => 1
     }
     $client.search(options) do |data|
       @count = $client.rets_data[:count].to_i
@@ -252,12 +252,17 @@ namespace :update do
   end
 
   def client_login
-    $client = RETS::Client.login(
-      :url => "http://carets.retscure.com:6103/platinum/login",
-      :username => "CARDUSTINBOLINGASSOC",
-      :password => "sterac1071",
-      :useragent => { :name => "CARETS-General/1.0" }
-    )
+    begin
+      $client = RETS::Client.login(
+        :url => "http://carets.retscure.com:6103/platinum/login",
+        :username => "CARDUSTINBOLINGASSOC",
+        :password => "sterac1071",
+        :useragent => { :name => "CARETS-General/1.0" }
+      )
+    rescue Timeout::Error
+      puts "Timeout, retrying..."
+      retry
+    end
   end
 
   def get_last_update_time(task)
@@ -277,7 +282,7 @@ namespace :update do
     u.new_count = @new_count
     u.update_count = @update_count
     u.error_count = @error_count
-    
+
     u.save
   end
 
