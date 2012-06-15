@@ -15,8 +15,22 @@
                 "ListingModificationDate": "<%= listing["ListingModificationDate"] %>",
                 "Area": "<%= listing["Area"] %>",
                 "ListingDate": "<%= listing["ListingDate"] %>",
-                "BuildersTractName": "<%= listing["BuildersTractName"] %>"
-            }
+                "BuildersTractName": "<%= listing["BuildersTractName"] %>",
+                "PropertyMedia": [
+                    <% listing.property_media.each_with_index do |pm, i| %>
+                        <% if i == listing.property_media.length - 1 %>
+                            {
+                                "PropItemNumber": "<%= pm.PropItemNumber  %>",
+                                "PropMediaURL": "<%= pm.PropMediaURL %>"
+                            }
+                        <% else %>
+                            {
+                                "PropItemNumber": "<%= pm.PropItemNumber  %>",
+                                "PropMediaURL": "<%= pm.PropMediaURL %>"
+                            },
+                        <% end %>
+                    <% end %>
+                ]}
         <% else %>
             "ListPrice": "<%= number_to_currency(listing["ListPrice"]) %>", 
             "FullStreetAddress": "<%= listing["FullStreetAddress"] %>",
@@ -31,8 +45,22 @@
             "ListingModificationDate": "<%= listing["ListingModificationDate"] %>",
             "Area": "<%= listing["Area"] %>",
             "ListingDate": "<%= listing["ListingDate"] %>",
-            "BuildersTractName": "<%= listing["BuildersTractName"] %>"
-        },
+            "BuildersTractName": "<%= listing["BuildersTractName"] %>",
+                "PropertyMedia": [
+                    <% listing.property_media.each_with_index do |pm, i| %>
+                        <% if i == listing.property_media.length - 1 %>
+                            {
+                                "PropItemNumber": "<%= pm.PropItemNumber  %>",
+                                "PropMediaURL": "<%= pm.PropMediaURL %>"
+                            }
+                        <% else %>
+                            {
+                                "PropItemNumber": "<%= pm.PropItemNumber  %>",
+                                "PropMediaURL": "<%= pm.PropMediaURL %>"
+                            },
+                        <% end %>
+                    <% end %>
+                ]},
         <% end %>
     <% end %>
     }
