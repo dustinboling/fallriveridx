@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120613192036) do
+ActiveRecord::Schema.define(:version => 20120615150114) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -549,6 +549,7 @@ ActiveRecord::Schema.define(:version => 20120613192036) do
 
   add_index "listings", ["BathsTotal"], :name => "index_listings_on_BathsTotal"
   add_index "listings", ["BedroomsTotal"], :name => "index_listings_on_BedroomsTotal"
+  add_index "listings", ["City", "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "ListingStatus"], :name => "idx_shortcode_search"
   add_index "listings", ["City"], :name => "index_listings_on_City"
   add_index "listings", ["FullStreetAddress"], :name => "index_listings_on_FullStreetAddress"
   add_index "listings", ["Latitude"], :name => "index_listings_on_Latitude"
@@ -557,6 +558,7 @@ ActiveRecord::Schema.define(:version => 20120613192036) do
   add_index "listings", ["ListPrice"], :name => "index_listings_on_ListPrice"
   add_index "listings", ["ListingID"], :name => "index_listings_on_ListingID"
   add_index "listings", ["ListingKey"], :name => "index_listings_on_ListingKey"
+  add_index "listings", ["ListingStatus"], :name => "index_listings_on_ListingStatus"
   add_index "listings", ["Longitude"], :name => "index_listings_on_Longitude"
   add_index "listings", ["SaleAgentAgentID"], :name => "index_listings_on_SaleAgentAgentID"
   add_index "listings", ["ZipCode"], :name => "index_listings_on_ZipCode"
