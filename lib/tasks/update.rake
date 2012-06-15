@@ -5,14 +5,15 @@ namespace :update do
     recent_updates = Update.order('id DESC').limit(9)
 
     puts "Here are the most recent updates:"
-    puts "================================="
+    i = 1
     recent_updates.each do |u|
-      puts u.task.capitalize
-      puts "updated at: #{u.created_at} (#{u.unixtime})"
+      puts "#{i}) =============================="
+      puts "#{u.task.capitalize} @ #{u.created_at} (#{u.unixtime})"
       puts "New Count: #{u.new_count}"
       puts "Update Count: #{u.update_count}"
       puts "Error Count: #{u.error_count}"
       puts "================================="
+      i = i + 1
     end
   end
 
