@@ -3,6 +3,7 @@
         "<%= listing["ListingID"] %>": { 
         <% if i == @listings.length - 1 %>
                 "ListPrice": "<%= number_to_currency(listing["ListPrice"]) %>", 
+                "PropertyType": "<%= listing["PropertyType"] %>",
                 "FullStreetAddress": "<%= listing["FullStreetAddress"] %>",
                 "City": "<%= listing["City"] %>",
                 "State": "<%= listing["State"] %>",
@@ -33,6 +34,7 @@
                 ]}
         <% else %>
             "ListPrice": "<%= number_to_currency(listing["ListPrice"]) %>", 
+            "PropertyType": "<%= listing["PropertyType"] %>",
             "FullStreetAddress": "<%= listing["FullStreetAddress"] %>",
             "City": "<%= listing["City"] %>",
             "State": "<%= listing["State"] %>",
