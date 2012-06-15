@@ -5,7 +5,7 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  before_filter :authenticate_referrer
+  # before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "ListingStatus", "FullStreetAddress", "City", 
     "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", 
@@ -58,22 +58,20 @@ class Api::PropertiesController < ApplicationController
 
       # check to see query has been modified, make it into an acceptable SQL query, add limit
       # note that default limit is currently set to 15
-      if /AND \A/.match(query) && @query_limit
-        query = query[0..-6]
-        query = query + @query_limit + ";"
-      elsif /AND \A/.match(query)
-        query = query[0..-6]
-        query = query + " LIMIT 15" + ";"
-      elsif @order_by && @query_limit
+      if @order_by && @query_limit
         query = query + @order_by + @query_limit + ";"
+      elsif @query_limit 
+        query = query + @query_limit + ";"
       elsif @order_by
         query = query + @order_by + ";"
+      elsif !@order_by
+        query = query + " LIMIT 15" + ";"
       else
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied.")
       end
 
-      if query == "SELECT * FROM listings WHERE "
+      if query == "SELECT * FROM listings WHERE \"ListingStatus\" = 'Active AND "
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied")
       else
