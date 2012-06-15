@@ -13,8 +13,13 @@ namespace :update do
       :count_mode => :both, 
         :limit => 1
     }
-    $client.search(options) do |data|
-      @count = $client.rets_data[:count].to_i
+    begin
+      $client.search(options) do |data|
+        @count = $client.rets_data[:count].to_i
+      end
+    rescue Timeout::Error
+      puts "Rescuing from Timeout..."
+      retry
     end
 
     # quit if 0
@@ -182,8 +187,13 @@ namespace :update do
       :count_mode => :both, 
         :limit => 1
     }
-    $client.search(options) do |data|
-      @count = $client.rets_data[:count].to_i
+    begin
+      $client.search(options) do |data|
+        @count = $client.rets_data[:count].to_i
+      end
+    rescue Timeout::Error
+      puts "Rescuing from timeout..."
+      retry
     end
 
     if @count == nil
