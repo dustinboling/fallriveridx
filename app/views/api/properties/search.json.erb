@@ -1,6 +1,6 @@
 { "listings": {
     <% @listings.each_with_index do |listing, i| %>
-        "<%= key %>": { 
+        "<%= listing["ListingID"] %>": { 
         <% if i == @listings.length - 1 %>
                 "ListPrice": <%= number_to_currency(listing["ListPrice"]) %>, 
                 "FullStreetAddress": <%= listing["FullStreetAddress"] %>,
