@@ -12,9 +12,6 @@ class Api::PropertiesController < ApplicationController
     "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", 
     "controller", "action", "format", "Token"]
 
-  def search_summary
-  end
-
   def search
     # construct SQL query
     if @user_params.keys.count == 0

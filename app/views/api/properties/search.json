@@ -1,0 +1,39 @@
+{ "listings": {
+    <% @listings.each_with_index do |listing, i| %>
+        "<%= key %>": { 
+        <% if i == @listings.length - 1 %>
+                "ListPrice": <%= number_to_currency(listing["ListPrice"]) %>, 
+                "FullStreetAddress": <%= listing["FullStreetAddress"] %>,
+                "City": <%= listing["City"] %>,
+                "State": <%= listing["State"] %>,
+                "ZipCode": <%= listing["ZipCode"] %>,
+                "BedroomsTotal": <%= listing["BedroomsTotal"] %>,
+                "BathsTotal": <%= listing["BathsTotal"] %>,
+                "BuildingSize": <%= listing["BuildingSize"] %>,
+                "LotSizeSQFT": <%= listing["LotSizeSQFT"] %>,
+                "YearBuilt": <%= listing["YearBuilt"] %>,
+                "ListingModificationDate": <%= listing["ListingModificationDate"] %>,
+                "Area": <%= listing["Area"] %>
+                "ListingDate": <%= listing["ListingDate"] %>,
+                "BuildersTractName": <%= listing["BuildersTractName"] %>
+            }
+        <% else %>
+            "ListPrice": <%= number_to_currency(listing["ListPrice"]) %>, 
+            "FullStreetAddress": <%= listing["FullStreetAddress"] %>,
+            "City": <%= listing["City"] %>,
+            "State": <%= listing["State"] %>,
+            "ZipCode": <%= listing["ZipCode"] %>,
+            "BedroomsTotal": <%= listing["BedroomsTotal"] %>,
+            "BathsTotal": <%= listing["BathsTotal"] %>,
+            "BuildingSize": <%= listing["BuildingSize"] %>,
+            "LotSizeSQFT": <%= listing["LotSizeSQFT"] %>,
+            "YearBuilt": <%= listing["YearBuilt"] %>,
+            "ListingModificationDate": <%= listing["ListingModificationDate"] %>,
+            "Area": <%= listing["Area"] %>
+            "ListingDate": <%= listing["ListingDate"] %>,
+            "BuildersTractName": <%= listing["BuildersTractName"] %>
+        },
+        <% end %>
+    <% end %>
+    }
+}

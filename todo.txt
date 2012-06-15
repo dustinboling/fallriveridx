@@ -31,6 +31,7 @@ fallriver IDX - TODO
 #29 - need some kind of scaling to run automatically for long queries (i.e. start up an additional dyno when a query takes too long)
 #30 - set up batsd interface 
 #31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
+#32 - API: add pagination
 
 COMPLETED
 #1 - write Property seed task
