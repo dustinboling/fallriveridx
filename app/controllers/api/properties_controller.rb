@@ -21,7 +21,7 @@ class Api::PropertiesController < ApplicationController
       batsd_log_error(:type => :params)
       respond_error("No parameters supplied.")
     else
-      query = "SELECT * FROM listings WHERE "
+      query = "SELECT * FROM listings WHERE ListingStatus = 'Active' AND"
       @user_params.each do |key, value|
         if /ListPrice/.match(key)
           price_exp = "/\A" + params[:ListPrice] + "/"
