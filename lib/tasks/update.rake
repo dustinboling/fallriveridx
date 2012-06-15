@@ -2,18 +2,15 @@ namespace :update do
 
   desc "get a pretty list of the recent updates."
   task :list => :environment do
-    recent_updates = Update.order('id DESC').limit(9)
+    recent_updates = Update.order('id DESC').limit(4)
 
     puts "Here are the most recent updates:"
-    i = 1
-    recent_updates.each do |u|
-      puts "#{i}) =============================="
+    recent_updates.reverse.each do |u|
+      puts "================================="
       puts "#{u.task.capitalize} @ #{u.created_at} (#{u.unixtime})"
       puts "New Count: #{u.new_count}"
       puts "Update Count: #{u.update_count}"
       puts "Error Count: #{u.error_count}"
-      puts "================================="
-      i = i + 1
     end
   end
 
