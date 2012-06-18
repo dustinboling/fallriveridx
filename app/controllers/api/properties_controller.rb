@@ -90,6 +90,9 @@ class Api::PropertiesController < ApplicationController
     elsif params[:FullStreetAddress]
       @listing = Listing.where(:FullStreetAddress => params[:FullStreetAddress])
       batsd_log_success
+    else
+      batsd_log_error(:type => :params)
+      respond_error("Invalid parameter passed.")
     end
   end
 

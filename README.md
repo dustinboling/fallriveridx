@@ -30,7 +30,9 @@ These are the acceptable parameters that are currently searchable from our prope
 * ListingStatus (Active or Closed)
 
 ### Show (Single Property Details)
-This is what a single property search looks like. It only takes one parameter, ListingID, along with your token.
+This is what a single property search looks like. It only takes the following parameters, along with your token.
+* ListingID
+* FullStreetAddress
 
 ```ruby
 http://fallriveridx.heroku.com/api/properties/show.json?ListingID=P12345678&Token=yourToken
