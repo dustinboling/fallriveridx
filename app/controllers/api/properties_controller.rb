@@ -31,7 +31,7 @@ class Api::PropertiesController < ApplicationController
             respond_error("Could not parse ListPrice.")
           end 
         elsif /PriceRange/.match(key)
-          prange = key.split('-')
+          prange = value.split('-')
           plow = prange[0]
           phigh = prange[1]
           query = query + "\"ListPrice\" BETWEEN #{plow} AND #{phigh} AND "
