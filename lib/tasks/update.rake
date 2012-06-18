@@ -2,7 +2,7 @@ namespace :update do
 
   desc "get a pretty list of the recent updates."
   task :list => :environment do
-    recent_updates = Update.order('id DESC').limit(4)
+    recent_updates = Update.order('id DESC').limit(6)
 
     puts "Here are the most recent updates:"
     recent_updates.reverse.each do |u|
@@ -25,7 +25,7 @@ namespace :update do
       :class => :RES, 
       :query => "(ModificationTimestamp=#{@last_update_rets}-NOW)", 
       :count_mode => :both, 
-        :limit => 1
+      :limit => 1
     }
     begin
       $client.search(options) do |data|
