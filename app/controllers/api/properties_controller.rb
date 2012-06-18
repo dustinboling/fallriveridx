@@ -66,8 +66,8 @@ class Api::PropertiesController < ApplicationController
         query = query + @query_limit + ";"
       elsif @order_by
         query = query + @order_by + ";"
-      elsif !@order_by
-        query = query + " LIMIT 15" + ";"
+      elsif !@order_by && !@query_limit
+        query = query + " LIMIT 50" + ";"
       else
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied.")
