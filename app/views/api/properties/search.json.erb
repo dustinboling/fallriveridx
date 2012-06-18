@@ -2,6 +2,7 @@
     <% @listings.each_with_index do |listing, i| %>
         "<%= listing["ListingID"] %>": { 
         <% if i == @listings.length - 1 %>
+                "ListingID": "<%= listing["ListingID"] %>",
                 "ListPrice": "<%= number_to_currency(listing["ListPrice"]) %>", 
                 "PropertyType": "<%= listing["PropertyType"] %>",
                 "FullStreetAddress": "<%= listing["FullStreetAddress"] %>",
@@ -34,6 +35,7 @@
                     <% end %>
                 ]}
         <% else %>
+            "ListingID": "<%= listing["ListingID"] %>",
             "ListPrice": "<%= number_to_currency(listing["ListPrice"]) %>", 
             "PropertyType": "<%= listing["PropertyType"] %>",
             "FullStreetAddress": "<%= listing["FullStreetAddress"] %>",
