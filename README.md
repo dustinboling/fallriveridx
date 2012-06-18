@@ -22,6 +22,7 @@ These are the acceptable parameters that are currently searchable from our prope
 * BuildersTractName
 * ListAgentAgentID (This is the agent)
 * SaleAgentAgentID (This is the broker)
+* PriceRange (low-high ex: PriceRange=100-900000, returns homes within the range)
 * ListPrice (Must provide greater than or equal to. ex: ListPrice=>450000 will return houses listed at $450,000 or more)
 * BedroomsTotal (returns greater than or equal to the number given)
 * BathsTotal (returns greater than or equal to the number given)

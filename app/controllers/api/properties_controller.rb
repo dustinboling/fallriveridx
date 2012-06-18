@@ -9,7 +9,7 @@ class Api::PropertiesController < ApplicationController
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "ListingStatus", "FullStreetAddress", "City", 
     "ZipCode", "BuildersTractName", "ListAgentAgentID", "SaleAgentAgentID", 
-    "ListPrice", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", 
+    "ListPrice", "PriceRange", "BedroomsTotal", "BathsTotal", "BuildingSize", "Limit", 
     "controller", "action", "format", "Token"]
 
   def search
@@ -30,6 +30,11 @@ class Api::PropertiesController < ApplicationController
             batsd_log_error(:type => :params)
             respond_error("Could not parse ListPrice.")
           end 
+        elsif /PriceRange/.match(key)
+          prange = key.split('-')
+          plow = prange[0]
+          phigh = prange[1]
+          query = query + "\"ListPrice\" BETWEEN #{plow} AND #{phigh} AND "
         elsif /BathsTotal/.match(key) || /BedroomsTotal/.match(key) || /BuildingSize/.match(key)
           query = query + "\"#{key}\" >= '#{value}' AND "
         elsif /SortBy/.match(key)
