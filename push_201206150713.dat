@@ -1,1 +1,0 @@
-{"klass":"Taps::Push","database_url":"postgres://fallriveridx:123456@127.0.0.1/fallriveridx_development?encoding=utf8","remote_url":"http://heroku:osui59a24am79x@taps19.heroku.com","session_uri":"/sessions/3326438378","stream_state":{},"completed_tables":["errors"],"table_filter":"(^updates$|^errors$)","local_tables_info":{"errors":0,"updates":13}}
