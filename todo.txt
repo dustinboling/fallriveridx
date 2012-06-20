@@ -11,24 +11,11 @@ fallriver IDX - TODO
 * We have to do this because of the uppercase letters in postgres columns.
 * Note that arel-style queries work normally, and are more performant.
 *== Listing.where('"ListingDate" like ?', "1987%")
-* OBSERVATIONS
-* query time went down by adding a limit, 20 seems to be the max with o indices (20 =~ 600ms in AR)
 
-#8 - finish loading all properties to database, push to heroku
-#12 - log logins fail/success
-#13 - log ip addresses from which api requests are made
-#15 - get all the necessary Property fields into the RABL template
-#16 - see if its faster to not extend the show action (RABL)
 #19 - test api controller. rigorously.
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
-#22 - add streetview link to InfoWindow for maps
-#23 - fix search.json public remarks (works local, not on heroku)
-#24 - make sure that we are actually getting all historical datas
-#25 - index ListingID on listings and property_media
-#26 - make sure indexes were pushed to heroku 
 #27 - lock down ALL controller actions or there will be no @user object to tie into the batsd implementation
 #28 - upgrade to 3.2, then run explain on everything, make sure an index is used on all functions
-#29 - need some kind of scaling to run automatically for long queries (i.e. start up an additional dyno when a query takes too long)
 #30 - set up batsd interface 
 #31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
 #32 - API: add pagination
@@ -44,11 +31,24 @@ COMPLETED
 #9 - make sure there are no admin people in the Agent table
 #21 - drop brokers table
 #11 - log api requests
+#12 - log logins fail/success
+#13 - log ip addresses from which api requests are made
+#15 - get all the necessary Property fields into the RABL template
+#16 - see if its faster to not extend the show action (RABL)
+#22 - add streetview link to InfoWindow for maps
+#23 - fix search.json public remarks (works local, not on heroku)
+#24 - make sure that we are actually getting all historical datas
+#25 - index ListingID on listings and property_media
+#26 - make sure indexes were pushed to heroku 
+#8 - finish loading all properties to database, push to heroku
 
 
 TO TEST
 #4 - write Property update task
 #5 - write Agent update task
+
+MAYBE
+#29 - need some kind of scaling to run automatically for long queries (i.e. start up an additional dyno when a query takes too long)
 
 CANCELLED
 #2.1 - separate ActiveAgent fields into broker/agent
