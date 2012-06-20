@@ -1,21 +1,8 @@
 fallriver IDX - TODO
 
-**NOTE**
-* The client does not stay alive for very long, the nonce becomes invalid.
-* Thus, spin up a new client as needed. Do not rely on an initializer.
-* Or, we can rescue from the nonce error: '20036: V2.7.0 1186: Nonce is invalid'
-* Another option: keep the client alive with an hourly(?) task
-
-**QUERIES**
-* Use the following syntax to find things in the database.
-* We have to do this because of the uppercase letters in postgres columns.
-* Note that arel-style queries work normally, and are more performant.
-*== Listing.where('"ListingDate" like ?', "1987%")
-
 #19 - test api controller. rigorously.
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 #27 - lock down ALL controller actions or there will be no @user object to tie into the batsd implementation
-#28 - upgrade to 3.2, then run explain on everything, make sure an index is used on all functions
 #30 - set up batsd interface 
 #31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
 #32 - API: add pagination
@@ -55,3 +42,5 @@ CANCELLED
   - rets database was too inconsistent
 #6 - devise authentication with token authenticable module support for json queries
   - using custom solution
+#28 - upgrade to 3.2, then run explain on everything, make sure an index is used on all functions
+  - too time consuming, just doing live.
