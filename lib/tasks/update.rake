@@ -7,7 +7,7 @@ namespace :update do
     puts "Here are the most recent updates:"
     recent_updates.reverse.each do |u|
       puts "================================="
-      puts "#{u.task.capitalize} @ #{u.created_at} (#{u.unixtime})"
+      puts "#{u.task.capitalize} finished @ #{u.created_at}"
       puts "New Count: #{u.new_count}"
       puts "Update Count: #{u.update_count}"
       puts "Error Count: #{u.error_count}"
