@@ -4,8 +4,9 @@ fallriver IDX - TODO
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 #27 - lock down ALL controller actions or there will be no @user object to tie into the batsd implementation
 #30 - set up batsd interface 
-#31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
 #32 - API: add pagination
+#33 - remove all instances of rabl. remove rabl gem. too slow for so many records json.erb is faster.
+#34 - performance tune database (analayze, reindex, repeat)
 
 COMPLETED
 #1 - write Property seed task
@@ -44,3 +45,4 @@ CANCELLED
   - using custom solution
 #28 - upgrade to 3.2, then run explain on everything, make sure an index is used on all functions
   - too time consuming, just doing live.
+#31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
