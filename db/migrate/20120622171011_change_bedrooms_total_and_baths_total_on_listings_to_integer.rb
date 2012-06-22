@@ -1,5 +1,6 @@
 class ChangeBedroomsTotalAndBathsTotalOnListingsToInteger < ActiveRecord::Migration
   def change
+    # TODO: remove indexes here, add them back at the end of the migration
     puts "Finding any empty spaces on column BedroomsTotal and setting to zero..."
     i = 0
     li = Listing.where(:BedroomsTotal => "")
