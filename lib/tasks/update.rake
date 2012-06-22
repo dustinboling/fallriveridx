@@ -56,7 +56,6 @@ namespace :update do
         :limit => 500000
       }
       $client.search(options) do |data|
-        print "\r#{@counter}/#{@count}"
         if Listing.where(:ListingKey => data['ListingKey']).empty?
           @listing = Listing.new
           columns = Listing.columns
@@ -142,7 +141,6 @@ namespace :update do
         :limit => 500000
       }
       $client.search(options) do |data|
-        print "\r#{@counter}/#{@count}"
         if Agent.where(:AgentKey => data['AgentKey']).empty?
           @agent = Agent.new
           columns = Agent.columns
@@ -229,7 +227,6 @@ namespace :update do
         :limit => 500000
       }
       $client.search(options) do |data|
-        print "\r#{@counter}/#{@count}"
         if PropertyMedium.where(:PropMediaKey => data['PropMediaKey']).empty?
           @prop_media = PropertyMedium.new
           columns = PropertyMedium.columns
