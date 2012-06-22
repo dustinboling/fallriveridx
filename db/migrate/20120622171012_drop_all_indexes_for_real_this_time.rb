@@ -5,7 +5,7 @@ class DropAllIndexesForRealThisTime < ActiveRecord::Migration
     remove_index :listings, :FullStreetAddress
     remove_index :listings, :City
     remove_index :listings, :Latitude
-    remove_index :listings, :Latitude
+    remove_index :listings, :Longitude
   end
 
   def down
