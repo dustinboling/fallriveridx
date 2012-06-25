@@ -7,6 +7,8 @@ fallriver IDX - TODO
 #32 - API: add pagination
 #33 - remove all instances of rabl. remove rabl gem. too slow for so many records json.erb is faster.
 #34 - performance tune database (analayze, reindex, repeat)
+#35 - logger: a property#search that returns 0 results should not record a fail. it should record success.count=0 or something to that effect.
+#36 - logger: consider adding the params requested back in
 
 COMPLETED
 #1 - write Property seed task

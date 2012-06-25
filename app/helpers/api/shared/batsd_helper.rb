@@ -5,6 +5,7 @@ module Api::Shared::BatsdHelper
   # as possible. The idea is to keep as calls to the logger as possible. 
 
   # Options setters to get around scope issues.
+  # TODO: try making request, params referer attr_accessible, then push everything down into Batsd module
   def batsd_log_error(options={})
     opts = {}
     if @user
