@@ -3,7 +3,7 @@ fallriver IDX - TODO
 #19 - test api controller. rigorously.
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 #27 - lock down ALL controller actions or there will be no @user object to tie into the batsd implementation
-#30 - set up batsd interface 
+#30 - set up batsd client interface 
 #32 - API: add pagination
 #33 - remove all instances of rabl. remove rabl gem. too slow for so many records json.erb is faster.
 #34 - performance tune database (analayze, reindex, repeat)
