@@ -1,28 +1,5 @@
 class BrokersController < ApplicationController
-  # GET /brokers
-  # GET /brokers.json
-  def index
-    @brokers = Broker.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @brokers }
-    end
-  end
-
-  # GET /brokers/1
-  # GET /brokers/1.json
-  def show
-    @broker = Broker.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @broker }
-    end
-  end
-
-  # GET /brokers/new
-  # GET /brokers/new.json
   def new
     @broker = Broker.new
 
@@ -32,13 +9,6 @@ class BrokersController < ApplicationController
     end
   end
 
-  # GET /brokers/1/edit
-  def edit
-    @broker = Broker.find(params[:id])
-  end
-
-  # POST /brokers
-  # POST /brokers.json
   def create
     @broker = Broker.new(params[:broker])
 
@@ -53,8 +23,6 @@ class BrokersController < ApplicationController
     end
   end
 
-  # PUT /brokers/1
-  # PUT /brokers/1.json
   def update
     @broker = Broker.find(params[:id])
 
@@ -69,8 +37,6 @@ class BrokersController < ApplicationController
     end
   end
 
-  # DELETE /brokers/1
-  # DELETE /brokers/1.json
   def destroy
     @broker = Broker.find(params[:id])
     @broker.destroy

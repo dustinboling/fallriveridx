@@ -1,28 +1,5 @@
 class AgentsController < ApplicationController
-  # GET /agents
-  # GET /agents.json
-  def index
-    @agents = Agent.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @agents }
-    end
-  end
-
-  # GET /agents/1
-  # GET /agents/1.json
-  def show
-    @agent = Agent.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @agent }
-    end
-  end
-
-  # GET /agents/new
-  # GET /agents/new.json
   def new
     @agent = Agent.new
 
@@ -32,13 +9,6 @@ class AgentsController < ApplicationController
     end
   end
 
-  # GET /agents/1/edit
-  def edit
-    @agent = Agent.find(params[:id])
-  end
-
-  # POST /agents
-  # POST /agents.json
   def create
     @agent = Agent.new(params[:agent])
 
@@ -53,8 +23,6 @@ class AgentsController < ApplicationController
     end
   end
 
-  # PUT /agents/1
-  # PUT /agents/1.json
   def update
     @agent = Agent.find(params[:id])
 
@@ -69,8 +37,6 @@ class AgentsController < ApplicationController
     end
   end
 
-  # DELETE /agents/1
-  # DELETE /agents/1.json
   def destroy
     @agent = Agent.find(params[:id])
     @agent.destroy

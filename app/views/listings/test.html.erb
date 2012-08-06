@@ -1,9 +1,0 @@
-<div class="containter">
-  <h1>this is a test</h1>
-
-  <% $client.search(:search_type => :Property, :class => :RES, :filter => "(ListPrice=50000-)", :limit => 1) do |data| %>
-    <h1><%= data["ListingID"] %></h1>
-    <p><%= data.keys %></p>
-    <br />
-  <% end %>
-</div>
