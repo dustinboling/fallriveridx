@@ -13,7 +13,7 @@ http://fallriveridx.heroku.com/api/properties/index.json?[yourQuery][yourToken]
 Here is what a full request looks like:
 
 ```ruby
-http://fallriveridx.heroku.com/api/properties/search.json?ListAgentAgentID=A00000111&City=Newport%20Beach&Price=<750000&Token=yourToken
+http://fallriveridx.heroku.com/api/properties/index.json?ListAgentAgentID=A00000111&City=Newport%20Beach&Price=<750000&Token=yourToken
 ```
 
 These are the acceptable parameters that are currently searchable from our property api:
