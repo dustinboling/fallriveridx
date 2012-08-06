@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: "mailer@fallriveridx.heroku.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -13,7 +13,7 @@ class UserMailer < ActionMailer::Base
          :subject => "Your password has been reset")
   end
 
-  def new_api_key_email
+  def new_api_key_email(user)
     @user = user
     @key  = user.authentication_token
     mail(:to => user.email,
