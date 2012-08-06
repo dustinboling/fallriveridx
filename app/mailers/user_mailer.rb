@@ -12,5 +12,12 @@ class UserMailer < ActionMailer::Base
     mail(:to => user.email,
          :subject => "Your password has been reset")
   end
+
+  def new_api_key_email
+    @user = user
+    @key  = user.authentication_token
+    mail(:to => user.email,
+         :subject => "Your Fall River IDX API key") 
+  end
   
 end

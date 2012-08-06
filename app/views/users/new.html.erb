@@ -1,27 +1,31 @@
 <div class="container">
-	<h1>API Sign Up</h1>
+  <h1>API Sign Up</h1>
+  <p>To sign up for an api key, just fill in the stuff below.</p>
 
-	<%= form_for @user do |f| %>
-		<% if @user.errors.any? %>
-			<div class="error_messages">
-				<h2>Form is invalid</h2>
-				<ul>
-					<% for message in @user.errors.full_messages %>
-						<li><%= messageh %></li>
-					<% end %>
-				</ul>
-			</div>
-		<% end %>
-	
-		<%= f.label :username %>
-		<%= f.text_field :username %>
-	
-		<%= f.label :password %>
-		<%= f.text_field :password %>
-	
-		<%= f.label :password_confirmation %>
-		<%= f.text_field :password_confirmation %>
-	
-		<%= f.submit %>
-	<% end %>
+  <%= form_for @user do |f| %>
+  <% if @user.errors.any? %>
+  <div class="error_messages">
+    <h2>Form is invalid</h2>
+    <ul>
+      <% for message in @user.errors.full_messages %>
+      <li><%= messageh %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <%= f.label :username %>
+  <%= f.text_field :username %>
+
+  <%= f.label :email %>
+  <%= f.text_field :email %>
+
+  <%= f.label :password %>
+  <%= f.text_field :password %>
+
+  <%= f.label :password_confirmation %>
+  <%= f.text_field :password_confirmation %>
+
+  <%= f.submit %>
+  <% end %>
 </div>
