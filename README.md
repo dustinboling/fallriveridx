@@ -3,11 +3,11 @@ Hello, this is the IDX for Dustin Boling Associates real estate sites. Just your
 
 ## PROPERTY API
 
-### Search
+### Index (Property search)
 The property search api takes requests here:
 
 ```ruby
-http://fallriveridx.heroku.com/api/properties/search.json?[yourQuery][yourToken]
+http://fallriveridx.heroku.com/api/properties/index.json?[yourQuery][yourToken]
 ```
 
 Here is what a full request looks like:

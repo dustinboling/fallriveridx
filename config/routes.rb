@@ -8,7 +8,7 @@ Fallriveridx::Application.routes.draw do
 
   # api
   namespace :api do
-    get "properties/search"
+    get "properties/index"
     get "properties/show"
     get "properties/invalid_parameters"
     get "accounts/create"

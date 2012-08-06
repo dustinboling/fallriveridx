@@ -13,7 +13,7 @@ class Api::PropertiesController < ApplicationController
     "BathsTotal", "BuildingSize", "Limit", "controller", 
     "action", "format", "Token"]
 
-  def search
+  def index
     # construct SQL query
     if @user_params.keys.count == 0
       batsd_log_error(:type => :params)
