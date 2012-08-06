@@ -16,6 +16,8 @@
 
 # Ignore vim stuff
 *.swo
-*.swp
+*pick.swp
+
+/db/schema.rb
 
 todo.*

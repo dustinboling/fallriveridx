@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120615150114) do
+ActiveRecord::Schema.define(:version => 20120622171630) do
 
   create_table "agents", :force => true do |t|
     t.text     "AgentDesignations"
@@ -276,9 +276,9 @@ ActiveRecord::Schema.define(:version => 20120615150114) do
     t.integer "BathOneQuarter"
     t.integer "BathThreeQuarter"
     t.text    "BathroomFeatures"
-    t.text    "BathsTotal"
+    t.text    "baths_total_string"
     t.text    "BedroomFeatures"
-    t.text    "BedroomsTotal"
+    t.text    "bedrooms_total_string"
     t.text    "ShowingContactCompleteName"
     t.text    "ShowingContactType"
     t.text    "Rooms"
@@ -545,6 +545,8 @@ ActiveRecord::Schema.define(:version => 20120615150114) do
     t.decimal "Longitude"
     t.decimal "BuildingSize"
     t.decimal "LotSizeSQFT"
+    t.decimal "BedroomsTotal"
+    t.decimal "BathsTotal"
   end
 
   add_index "listings", ["BathsTotal"], :name => "index_listings_on_BathsTotal"
