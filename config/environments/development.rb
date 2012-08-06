@@ -34,4 +34,10 @@ Fallriveridx::Application.configure do
   # this allows WEBrick to handle pipe symbols in query parameters
   URI::DEFAULT_PARSER = URI::Parser.new(:UNRESERVED => URI::REGEXP::PATTERN::UNRESERVED + '|')
 
+  # Raise exception on mass assignment protection for Active Record models
+  config.active_record.mass_assignment_sanitizer = :strict
+
+  # Log the query plan for queries taking more than this (in seconds)
+  config.active_record.auto_explain_threshold_in_seconds = 0.5
+
 end
