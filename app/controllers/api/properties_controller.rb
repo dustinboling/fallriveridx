@@ -33,6 +33,7 @@ class Api::PropertiesController < ApplicationController
           end 
         elsif /PriceRange/.match(key)
           prange = value.split('-')
+          plow ||= 0
           plow = prange[0]
           phigh = prange[1]
           query = query + "\"ListPrice\" BETWEEN #{plow} AND #{phigh} AND "
