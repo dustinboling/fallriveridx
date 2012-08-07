@@ -17,7 +17,7 @@ module Api::Shared::BatsdHelper
     opts[:referer] = request.env["HTTP_REFERER"]
     opts[:controller] = params[:controller]
     opts[:action] = params[:action]
-    @referer = opts[:referer]
+    @ip = request.env['REMOTE_ADDR']
 
     if options[:type] == :referer
       opts[:error_type] = :referer
@@ -73,7 +73,7 @@ module Api::Shared::BatsdHelper
       if options[:error_type] == :auth
         counter = counter + ".auth"
       elsif options[:error_type] == :referer
-        counter = counter + ".referer" + "." + @referer
+        counter = counter + ".referer"
       elsif options[:error_type] == :params
         counter = counter + ".params"
       elsif options[:error_type] == :unknown

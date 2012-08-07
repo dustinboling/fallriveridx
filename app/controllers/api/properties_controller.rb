@@ -134,7 +134,7 @@ class Api::PropertiesController < ApplicationController
       if @user.authentication_token == "NULL"
         batsd_log_error(:type => :auth)
         respond_error("Your token is invalid. Please make sure your subscription is still active.")
-      elsif @user.site_url != request.env["HTTP_REFERER"]
+      elsif @user.site_url != request.env["HTTP_REFERER"] && @user.site_ip_address != request.env['REMOTE_ADDR']
         batsd_log_error(:type => :referer)
         respond_error("This site has not been activated (#{request})")
       elsif @user.site_url == "NULL"
