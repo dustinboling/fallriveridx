@@ -68,7 +68,7 @@ class Api::PropertiesController < ApplicationController
       elsif @order_by
         query = query + @order_by + ";"
       elsif !@order_by && !@query_limit
-        query = query + "ORDER BY \"ListingDate\" DESC LIMIT 500;"
+        query = query + "ORDER BY \"ListingDate\" DESC LIMIT 300;"
       else
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied.")
