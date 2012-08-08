@@ -78,8 +78,10 @@ class Api::PropertiesController < ApplicationController
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied")
       else
-        # push listings to view
+        # push listings/counts to view
         @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(1).per(20)
+        @page_count = (@listings.total_count / 20).ceil
+        @current_page = @listings.current_page
 
         # log to batsd
         batsd_log_success
