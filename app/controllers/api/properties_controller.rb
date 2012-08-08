@@ -11,7 +11,7 @@ class Api::PropertiesController < ApplicationController
     "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", 
     "SaleAgentAgentID", "ListPrice", "PriceRange", "BedroomsTotal", 
     "BathsTotal", "BuildingSize", "Limit", "controller", 
-    "action", "format", "Token"]
+    "PageNumber", "action", "format", "Token"]
 
   def index
     # construct SQL query
@@ -79,7 +79,7 @@ class Api::PropertiesController < ApplicationController
         respond_error("No parameters supplied")
       else
         # push listings/counts to view
-        @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(1).per(20)
+        @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(params[:page_number]).per(20)
         @page_count = (@listings.total_count / 20).ceil
         @current_page = @listings.current_page
 
