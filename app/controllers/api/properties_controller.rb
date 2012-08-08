@@ -5,7 +5,7 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  before_filter :authenticate_referrer
+  # before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "ListingStatus", "FullStreetAddress", 
     "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", 
@@ -79,7 +79,7 @@ class Api::PropertiesController < ApplicationController
         respond_error("No parameters supplied")
       else
         # push listings to view
-        @listings = Listing.find_by_sql_with_associations(query)
+        @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(1).per(20)
 
         # log to batsd
         batsd_log_success
