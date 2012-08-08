@@ -21,7 +21,8 @@ class Api::PropertiesController < ApplicationController
     else
       query = "SELECT * FROM listings WHERE \"ListingStatus\" = 'Active' AND "
       @user_params.each do |key, value|
-        if /ListPrice/.match(key)
+        if /PageNumber/.match(key)
+        elsif /ListPrice/.match(key)
           price_exp = "/\A" + params[:ListPrice] + "/"
           if price_exp.match('>')
             query = query + "\"ListPrice\" > '#{value[1..-1]}' AND "
@@ -79,7 +80,7 @@ class Api::PropertiesController < ApplicationController
         respond_error("No parameters supplied")
       else
         # push listings/counts to view
-        @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(params[:page_number]).per(20)
+        @listings = Kaminari.paginate_array(Listing.find_by_sql_with_associations(query)).page(params[:PageNumber]).per(20)
         @page_count = (@listings.total_count / 20).ceil
         @current_page = @listings.current_page
 
