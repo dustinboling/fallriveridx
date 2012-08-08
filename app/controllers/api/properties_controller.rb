@@ -5,7 +5,7 @@ class Api::PropertiesController < ApplicationController
   require 'socket'
 
   before_filter :validate_params
-  # before_filter :authenticate_referrer
+  before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "ListingStatus", "FullStreetAddress", 
     "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", 
@@ -61,7 +61,6 @@ class Api::PropertiesController < ApplicationController
       end
 
       # check to see query has been modified, make it into an acceptable SQL query, add limit
-      # note that default limit is currently set to 15
       if @order_by && @query_limit
         query = query + @order_by + @query_limit + ";"
       elsif @query_limit 
@@ -69,7 +68,7 @@ class Api::PropertiesController < ApplicationController
       elsif @order_by
         query = query + @order_by + ";"
       elsif !@order_by && !@query_limit
-        query = query + " LIMIT 200;"
+        query = query + " LIMIT 600;"
       else
         batsd_log_error(:type => :params)
         respond_error("No parameters supplied.")
