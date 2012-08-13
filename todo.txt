@@ -1,17 +1,15 @@
 fallriver IDX - TODO
 
-#19 - test api controller controllers. rigorously.
-#20 - move acceptable params constant into properties, move acceptable params function into properties_helper
+#19 - test api controllers. rigorously.
 #27 - lock down ALL controller actions or there will be no current_user object to tie into the batsd implementation
 #30 - set up batsd client interface 
-#32 - API: add pagination
-#33 - remove all instances of rabl. remove rabl gem. too slow for so many records json.erb is faster.
 #34 - performance tune database (analayze, reindex, repeat)
 #35 - logger: a property#search that returns 0 results should not record a fail. it should record success.count=0 or something to that effect.
 #36 - logger: consider adding the params requested back in 
 #37 - logger: implement rails notifications 
-#38 - signups
-#39 - subscriptions
+#38 - signups (stripe)
+#39 - subscriptions (stripe)
+#40 - queries are too slow when using paginate_array on an array > 400
 
 COMPLETED
 #1 - write Property seed task
@@ -34,6 +32,7 @@ COMPLETED
 #25 - index ListingID on listings and property_media
 #26 - make sure indexes were pushed to heroku 
 #8 - finish loading all properties to database, push to heroku
+#32 - API: add pagination
 
 
 TO TEST
@@ -42,6 +41,7 @@ TO TEST
 
 MAYBE
 #29 - need some kind of scaling to run automatically for long queries (i.e. start up an additional dyno when a query takes too long)
+#20 - move acceptable params constant into properties, move acceptable params function into properties_helper
 
 CANCELLED
 #2.1 - separate ActiveAgent fields into broker/agent
@@ -51,3 +51,4 @@ CANCELLED
 #28 - upgrade to 3.2, then run explain on everything, make sure an index is used on all functions
   - too time consuming, just doing live.
 #31 - FIREFOX Bug with chosen: in the odd chance that an enduser clicks refresh, the cities they have selected will be duplicated
+#33 - remove all instances of rabl. remove rabl gem. too slow for so many records json.erb is faster. (rabl is fine for single files)
