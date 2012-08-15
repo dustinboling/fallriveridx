@@ -7,11 +7,13 @@ class Api::PropertiesController < ApplicationController
   before_filter :validate_params
   before_filter :authenticate_referrer
 
-  ACCEPTABLE_PARAMS = ["SortBy", "ListingID", "ListingStatus", "FullStreetAddress", 
+  ACCEPTABLE_PARAMS = [
+    "SortBy", "ListingID", "ListingStatus", "FullStreetAddress", 
     "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", 
     "SaleAgentAgentID", "ListPrice", "PriceRange", "BedroomsTotal", 
     "BathsTotal", "BuildingSize", "Limit", "controller", 
-    "PageNumber", "action", "format", "Token"]
+    "PageNumber", "action", "format", "Token"
+  ]
 
   def index
     # construct SQL query
