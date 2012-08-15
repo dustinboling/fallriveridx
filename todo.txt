@@ -1,7 +1,6 @@
 fallriver IDX - TODO
 
 #19 - test api controllers. rigorously.
-#27 - lock down ALL controller actions or there will be no current_user object to tie into the batsd implementation
 #30 - set up batsd client interface 
 #34 - performance tune database (analayze, reindex, repeat)
 #35 - logger: a property#search that returns 0 results should not record a fail. it should record success.count=0 or something to that effect.
@@ -9,7 +8,6 @@ fallriver IDX - TODO
 #37 - logger: implement rails notifications 
 #38 - signups (stripe)
 #39 - subscriptions (stripe)
-#40 - queries are too slow when using paginate_array on an array > 400
 
 COMPLETED
 #1 - write Property seed task
@@ -33,6 +31,7 @@ COMPLETED
 #26 - make sure indexes were pushed to heroku 
 #8 - finish loading all properties to database, push to heroku
 #32 - API: add pagination
+#27 - lock down ALL controller actions or there will be no current_user object to tie into the batsd implementation
 
 
 TO TEST
@@ -42,6 +41,7 @@ TO TEST
 MAYBE
 #29 - need some kind of scaling to run automatically for long queries (i.e. start up an additional dyno when a query takes too long)
 #20 - move acceptable params constant into properties, move acceptable params function into properties_helper
+#40 - queries are too slow when using paginate_array on an array > 400
 
 CANCELLED
 #2.1 - separate ActiveAgent fields into broker/agent

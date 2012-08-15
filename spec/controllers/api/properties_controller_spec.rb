@@ -8,8 +8,6 @@ describe Api::PropertiesController do
     end
 
     it "renders some json for an authenticated user" do
-
     end
   end
-
 end
