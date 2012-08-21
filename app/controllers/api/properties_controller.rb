@@ -2,19 +2,23 @@ class Api::PropertiesController < ApplicationController
   include Api::Shared::ErrorsHelper
   include Api::Shared::BatsdHelper
 
+  # Move this into batsd if not required in ErrorsHelper
   require 'socket'
 
   before_filter :validate_params
   before_filter :authenticate_referrer
 
   ACCEPTABLE_PARAMS = [
-    "SortBy", "ListingID", "ListingStatus", "FullStreetAddress", 
-    "City", "ZipCode", "BuildersTractName", "ListAgentAgentID", 
-    "SaleAgentAgentID", "ListPrice", "PriceRange", "BedroomsTotal", 
-    "BathsTotal", "BuildingSize", "Limit", "controller", 
-    "PageNumber", "action", "format", "Token"
+    "SortBy"           , "ListingID"    , "ListingStatus"     , "FullStreetAddress" ,
+    "City"             , "ZipCode"      , "BuildersTractName" , "ListAgentAgentID"  ,
+    "SaleAgentAgentID" , "ListPrice"    , "PriceRange"        , "BedroomsTotal"     ,
+    "BathsTotal"       , "BuildingSize" , "Limit"             , "Token"             ,
+    "PageNumber"       , "action"       , "format"            , "controller"
   ]
 
+  # Optimized database queries are still pretty slow, so the extra 
+  # overhead of arel/active_record is unacceptable. Therefore,
+  # we are pretty much stuck with this monster. 
   def index
     # construct SQL query
     if @user_params.keys.count == 0
