@@ -2,7 +2,6 @@ fallriver IDX - TODO
 
 #19 - test api controllers. rigorously.
 #30 - set up batsd client interface 
-#34 - performance tune database (analayze, reindex, repeat)
 #35 - logger: a property#search that returns 0 results should not record a fail. it should record success.count=0 or something to that effect.
 #36 - logger: consider adding the params requested back in 
 #37 - logger: implement rails notifications 
@@ -32,6 +31,7 @@ COMPLETED
 #8 - finish loading all properties to database, push to heroku
 #32 - API: add pagination
 #27 - lock down ALL controller actions or there will be no current_user object to tie into the batsd implementation
+#34 - performance tune database (analayze, reindex, repeat)
 
 
 TO TEST
