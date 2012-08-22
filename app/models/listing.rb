@@ -10,7 +10,7 @@ class Listing < ActiveRecord::Base
 
   def self.find_by_sql_with_associations(query)
     listings = find_by_sql(query)
-    ActiveRecord::Associations::Preloader.new(listings, [:property_media, {:PropMimeType => 'IMAGE_GIF'}]).run
+    ActiveRecord::Associations::Preloader.new(listings, [:property_media, {:PropMimeType => 'IMAGE_JPEG'}]).run
     return listings
   end
 
