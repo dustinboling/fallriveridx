@@ -21,8 +21,6 @@
                 "PublicRemarks": "<%= listing["PublicRemarks"] %>",
                 "PropertyMedia": [
                     <% listing.property_media.each_with_index do |pm, i| %>
-                      <% mime_type = pm.PropMimeType %>
-                      <% unless mime_type != 'IMAGE_JPEG' || mime_type != 'IMAGE_GIF' || mime_type != 'IMAGE_PNG' %>
                         <% if i == listing.property_media.length - 1 %>
                             {
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
@@ -34,7 +32,6 @@
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             },
                         <% end %>
-                      <% end %>
                     <% end %>
                 ]}
         <% else %>
@@ -57,8 +54,6 @@
             "PublicRemarks": "<%= listing["PublicRemarks"] %>",
             "PropertyMedia": [
                     <% listing.property_media.each_with_index do |pm, i| %>
-                      <% mime_type = pm.PropMimeType %>
-                      <% unless mime_type != 'IMAGE_JPEG' || mime_type != 'IMAGE_GIF' || mime_type != 'IMAGE_PNG' %>
                         <% if i == listing.property_media.length - 1 %>
                             {
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
@@ -70,7 +65,6 @@
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             },
                         <% end %>
-                      <% end %>
                     <% end %>
                 ]},
         <% end %>
