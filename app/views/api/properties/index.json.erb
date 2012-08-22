@@ -21,7 +21,7 @@
                 "PublicRemarks": "<%= listing["PublicRemarks"] %>",
                 "PropertyMedia": [
                     <% listing.property_media.each_with_index do |pm, i| %>
-                      <% mime_type = listing.property_media.PropMimeType %>
+                      <% mime_type = pm.PropMimeType %>
                       <% unless mime_type != 'IMAGE_JPEG' %>
                         <% if i == listing.property_media.length - 1 %>
                             {
@@ -57,7 +57,7 @@
             "PublicRemarks": "<%= listing["PublicRemarks"] %>",
             "PropertyMedia": [
                     <% listing.property_media.each_with_index do |pm, i| %>
-                      <% mime_type = listing.property_media.PropMimeType %>
+                      <% mime_type = pm.PropMimeType %>
                       <% unless mime_type != 'IMAGE_JPEG' %>
                         <% if i == listing.property_media.length - 1 %>
                             {
