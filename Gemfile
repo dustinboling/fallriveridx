@@ -15,6 +15,7 @@ gem 'therubyracer'
 gem 'geocoder'
 gem 'heroku'
 gem 'kaminari'
+gem 'wukong'
 
 # for internal json api
 gem 'rabl'
