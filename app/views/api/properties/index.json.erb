@@ -23,11 +23,13 @@
                     <% listing.property_media.each_with_index do |pm, i| %>
                         <% if i == listing.property_media.length - 1 %>
                             {
+                                "PropMimeType": "<%= pm.PropMimeType %>",
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             }
                         <% else %>
                             {
+                                "PropMimeType": "<%= pm.PropMimeType %>",
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             },
@@ -56,11 +58,13 @@
                     <% listing.property_media.each_with_index do |pm, i| %>
                         <% if i == listing.property_media.length - 1 %>
                             {
+                                "PropMimeType": "<%= pm.PropMimeType %>",
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             }
                         <% else %>
                             {
+                                "PropMimeType": "<%= pm.PropMimeType %>",
                                 "PropItemNumber": "<%= pm.PropItemNumber  %>",
                                 "PropMediaURL": "<%= pm.PropMediaURL %>"
                             },
