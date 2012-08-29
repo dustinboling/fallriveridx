@@ -2,6 +2,7 @@ require 'wukong'
 
 # Provides distibution of values for a specific column for all records of 
 # an Active Record class.
+#
 module DistributionSorter
   class Mapper < Wukong::Streamer::Base
     # set record_klass to the AR class you'd like to batch process
