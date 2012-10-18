@@ -62,15 +62,11 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.3.3)
-    configliere (0.4.17)
-      highline (>= 1.5.2)
-      multi_json (>= 1.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
     excon (0.15.5)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    extlib (0.9.15)
     factory_girl (4.0.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.0.0)
@@ -88,9 +84,7 @@ GEM
       rubyzip
     heroku-api (0.3.2)
       excon (~> 0.15.5)
-    highline (1.6.13)
     hike (1.2.1)
-    htmlentities (4.3.1)
     httpauth (0.1)
     i18n (0.6.0)
     journey (1.0.4)
@@ -199,11 +193,6 @@ GEM
     uglifier (1.2.7)
       execjs (>= 0.3.0)
       multi_json (~> 1.3)
-    wukong (2.0.2)
-      addressable
-      configliere
-      extlib
-      htmlentities
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
@@ -232,4 +221,3 @@ DEPENDENCIES
   therubyracer
   turn (= 0.8.2)
   uglifier (>= 1.0.3)
-  wukong
